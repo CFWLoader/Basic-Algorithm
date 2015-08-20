@@ -38,6 +38,45 @@ namespace Sorter
             }
         }
     };
+
+    class InsertSorter
+    {
+    public:
+        template <typename RandomAccessIterator, typename KeyCompareMethod>
+        static void sort(RandomAccessIterator begin, RandomAccessIterator end, KeyCompareMethod compareMethod)
+        {
+            if(begin == end)return;
+
+            RandomAccessIterator iterator, rail, currentEnd = begin + 1;
+
+            while(currentEnd != end)
+            {
+                iterator = begin;
+
+                while(iterator != currentEnd)
+                {
+                    if(!compareMethod(*iterator, *currentEnd))
+                    {
+                        break;
+                    }
+
+                    ++iterator;
+                }
+
+                rail = currentEnd;
+
+                while(rail != iterator)
+                {
+                    std::swap(*rail, *(rail - 1));
+
+                    --rail;
+                }
+
+                ++currentEnd;
+            }
+
+        }
+    };
 }
 
 #endif //SORTING_SORTER_HPP
