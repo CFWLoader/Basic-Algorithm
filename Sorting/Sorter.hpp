@@ -139,7 +139,7 @@ namespace Sorter
                 return;
             }
 
-            RandomAccessIterator left = theLeft + 1, right = theRight, pivotPosition = theLeft;
+            RandomAccessIterator left = theLeft, right = theRight, pivotPosition = theLeft;
 
             typename RandomAccessIterator::value_type pivot = *pivotPosition;
 
@@ -151,7 +151,6 @@ namespace Sorter
             {
                 while((std::distance(left, right)) > 0 && compareMethod(pivot, *right))
                 {
-                    //std::advance(right, -1);
                     --right;
                 }
                 while((std::distance(left, right)) > 0 && compareMethod(*left, pivot))
