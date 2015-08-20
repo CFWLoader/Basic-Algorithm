@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <ctime>
 
 #include "Sorter.hpp"
 #include "Comparator.hpp"
@@ -13,8 +14,15 @@ int testInsertSorter();
 
 int testSelectSorter();
 
+int testQuickSorter();
+
 int main() {
-    return testSelectSorter();
+
+    //testSelectSorter();
+
+    //cout << endl;
+
+    return testQuickSorter();
 }
 
 int testBubbleSorter()
@@ -101,6 +109,37 @@ int testSelectSorter()
 
 
     Sorter::SelectSorter::sort(intVector.begin(), intVector.end(), Comparator::KeyLess());
+
+    for(int64_t iter : intVector){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+
+int testQuickSorter()
+{
+    vector<int64_t> intVector;
+
+    default_random_engine engine(static_cast<unsigned int>(time(0)));
+
+    uniform_int_distribution<int64_t> generator(1, 200);
+
+    for(size_t i = 0; i < 30; ++i)
+    {
+        intVector.push_back(generator(engine));
+    }
+
+    for(int64_t iter : intVector){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+
+    Sorter::QuickSorter::sort(intVector.begin(), intVector.end() - 1, Comparator::KeyLess());
 
     for(int64_t iter : intVector){
         cout << iter << " ";

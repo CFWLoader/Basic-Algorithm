@@ -5,7 +5,15 @@
 #ifndef SORTING_SORTER_HPP
 #define SORTING_SORTER_HPP
 
+#include <iterator>
 #include <utility>
+
+//#define DEBUGGING
+
+#ifdef DEBUGGING
+#include <iostream>
+
+#endif
 
 namespace Sorter
 {
@@ -50,25 +58,25 @@ namespace Sorter
                 return;
             }
 
-            RandomAccessIterator iterator, rail, currentEnd = begin + 1;
+            RandomAccessIterator iterator1, rail, currentEnd = begin + 1;
 
             while(currentEnd != end)
             {
-                iterator = begin;
+                iterator1 = begin;
 
-                while(iterator != currentEnd)
+                while(iterator1 != currentEnd)
                 {
-                    if(!compareMethod(*iterator, *currentEnd))
+                    if(!compareMethod(*iterator1, *currentEnd))
                     {
                         break;
                     }
 
-                    ++iterator;
+                    ++iterator1;
                 }
 
                 rail = currentEnd;
 
-                while(rail != iterator)
+                while(rail != iterator1)
                 {
                     std::swap(*rail, *(rail - 1));
 
@@ -92,22 +100,22 @@ namespace Sorter
                 return;
             }
 
-            RandomAccessIterator iterator, currentHead = begin, minPosition;
+            RandomAccessIterator iterator1, currentHead = begin, minPosition;
 
             while (currentHead != end)
             {
-                iterator = currentHead;
+                iterator1 = currentHead;
 
                 minPosition = currentHead;
 
-                while (iterator != end)
+                while (iterator1 != end)
                 {
-                    if(compareMethod(*iterator, *minPosition))
+                    if(compareMethod(*iterator1, *minPosition))
                     {
-                        minPosition = iterator;
+                        minPosition = iterator1;
                     }
 
-                    ++iterator;
+                    ++iterator1;
                 }
 
                 if(currentHead != minPosition)
@@ -117,6 +125,50 @@ namespace Sorter
 
                 ++currentHead;
             }
+        }
+    };
+
+    class QuickSorter
+    {
+    public:
+        template <typename RandomAccessIterator, typename KeyCompareMethod>
+        static void sort(RandomAccessIterator theLeft, RandomAccessIterator theRight, KeyCompareMethod compareMethod)
+        {
+            if(std::distance(theLeft, theRight) <= 0)
+            {
+                return;
+            }
+
+            RandomAccessIterator left = theLeft + 1, right = theRight, pivotPosition = theLeft;
+
+            typename RandomAccessIterator::value_type pivot = *pivotPosition;
+
+            #ifdef DEBUGGING
+            std::cout << "Pivot: " << pivot << std::endl;
+            #endif
+
+            while(std::distance(left, right) > 0)
+            {
+                while((std::distance(left, right)) > 0 && compareMethod(pivot, *right))
+                {
+                    //std::advance(right, -1);
+                    --right;
+                }
+                while((std::distance(left, right)) > 0 && compareMethod(*left, pivot))
+                {
+                    ++left;
+                }
+
+                if(std::distance(left, right) > 0)
+                {
+                    std::swap(*left, *right);
+                }
+            }
+
+            std::swap(*left, *pivotPosition);
+
+            QuickSorter::sort(theLeft, left - 1, compareMethod);
+            QuickSorter::sort(left + 1, theRight, compareMethod);
         }
     };
 }
