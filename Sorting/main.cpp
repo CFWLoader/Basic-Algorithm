@@ -11,8 +11,10 @@ int testBubbleSorter();
 
 int testInsertSorter();
 
+int testSelectSorter();
+
 int main() {
-    return testInsertSorter();
+    return testSelectSorter();
 }
 
 int testBubbleSorter()
@@ -68,6 +70,37 @@ int testInsertSorter()
 
 
     Sorter::InsertSorter::sort(intVector.begin(), intVector.end(), Comparator::KeyLess());
+
+    for(int64_t iter : intVector){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+
+int testSelectSorter()
+{
+    vector<int64_t> intVector;
+
+    default_random_engine engine;
+
+    uniform_int_distribution<int64_t> generator(1, 200);
+
+    for(size_t i = 0; i < 30; ++i)
+    {
+        intVector.push_back(generator(engine));
+    }
+
+    for(int64_t iter : intVector){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+
+    Sorter::SelectSorter::sort(intVector.begin(), intVector.end(), Comparator::KeyLess());
 
     for(int64_t iter : intVector){
         cout << iter << " ";

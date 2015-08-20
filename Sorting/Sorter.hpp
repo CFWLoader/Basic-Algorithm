@@ -45,7 +45,10 @@ namespace Sorter
         template <typename RandomAccessIterator, typename KeyCompareMethod>
         static void sort(RandomAccessIterator begin, RandomAccessIterator end, KeyCompareMethod compareMethod)
         {
-            if(begin == end)return;
+            if(begin == end)
+            {
+                return;
+            }
 
             RandomAccessIterator iterator, rail, currentEnd = begin + 1;
 
@@ -75,6 +78,45 @@ namespace Sorter
                 ++currentEnd;
             }
 
+        }
+    };
+
+    class SelectSorter
+    {
+    public:
+        template <typename RandomAccessIterator, typename KeyCompareMethod>
+        static void sort(RandomAccessIterator begin, RandomAccessIterator end, KeyCompareMethod compareMethod)
+        {
+            if(begin == end)
+            {
+                return;
+            }
+
+            RandomAccessIterator iterator, currentHead = begin, minPosition;
+
+            while (currentHead != end)
+            {
+                iterator = currentHead;
+
+                minPosition = currentHead;
+
+                while (iterator != end)
+                {
+                    if(compareMethod(*iterator, *minPosition))
+                    {
+                        minPosition = iterator;
+                    }
+
+                    ++iterator;
+                }
+
+                if(currentHead != minPosition)
+                {
+                    std::swap(*currentHead, *minPosition);
+                }
+
+                ++currentHead;
+            }
         }
     };
 }
