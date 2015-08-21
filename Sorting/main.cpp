@@ -186,13 +186,13 @@ int testMergeSorter()
 
 int testHeapSorter()
 {
-    array<int64_t, 20> valueArray;
+    array<int64_t, 30> valueArray;
 
     default_random_engine engine(static_cast<unsigned int>(time(0)));
 
     uniform_int_distribution<int64_t> generator(1, 200);
 
-    for(size_t i = 0; i < 20; ++i)
+    for(size_t i = 0; i < 30; ++i)
     {
         valueArray[i] = generator(engine);
     }

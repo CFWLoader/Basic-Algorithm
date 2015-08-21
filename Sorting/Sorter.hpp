@@ -250,18 +250,16 @@ namespace Sorter
                          KeyCompareMethod compareMethod = KeyCompareMethod())
         {
             //Building the heap.
-            for(size_t index = (arraySize - 1) / 2; index >= 0; --index)
+            for(int index = (arraySize - 1) / 2; index >= 0; --index)
             {
                 HeapSorter::heapify(sortingArray, index);
             }
-
-            std::cout << "Heapified." << std::endl;
 
             for(size_t index = arraySize - 1; index > 0; --index)
             {
                 std::swap(sortingArray[0], sortingArray[index]);
 
-                HeapSorter::heapify(sortingArray, index, index + 1);
+                HeapSorter::heapify(sortingArray, 0, index);
             }
         }
 
@@ -276,7 +274,8 @@ namespace Sorter
             {
                 targetIndex = HeapSorter::left(index);
             }
-            else if(HeapSorter::right(index) < heapSize &&
+
+            if(HeapSorter::right(index) < heapSize &&
                     compareMethod(sortingArray[targetIndex], sortingArray[HeapSorter::right(index)]))
             {
                 targetIndex = HeapSorter::right(index);
@@ -286,22 +285,18 @@ namespace Sorter
             {
                 std::swap(sortingArray[targetIndex], sortingArray[index]);
 
-                HeapSorter::heapify(sortingArray, targetIndex);
+                HeapSorter::heapify(sortingArray, targetIndex, heapSize, compareMethod);
             }
         }
 
         static size_t left(size_t index)
         {
-            if(index == 0)return 1;
-
-            return 2 * index - 1;
+            return 2 * index + 1;
         }
 
         static size_t right(size_t index)
         {
-            if(index == 0)return 2;
-
-            return 2 * index;
+            return 2 * (index + 1);
         }
     };
 }
