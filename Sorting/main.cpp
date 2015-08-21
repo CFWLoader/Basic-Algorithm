@@ -16,13 +16,15 @@ int testSelectSorter();
 
 int testQuickSorter();
 
+int testMergeSorter();
+
 int main() {
 
     //testSelectSorter();
 
     //cout << endl;
 
-    return testQuickSorter();
+    return testMergeSorter();
 }
 
 int testBubbleSorter()
@@ -138,8 +140,38 @@ int testQuickSorter()
 
     cout << endl;
 
+    Sorter::QuickSorter::sort(intVector.begin(), intVector.end());
+    //Sorter::QuickSorter::sort(intVector.begin(), intVector.end(), Comparator::KeyLess());
 
-    Sorter::QuickSorter::sort(intVector.begin(), intVector.end() - 1, Comparator::KeyLess());
+    for(int64_t iter : intVector){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+
+int testMergeSorter()
+{
+    vector<int64_t> intVector;
+
+    default_random_engine engine(static_cast<unsigned int>(time(0)));
+
+    uniform_int_distribution<int64_t> generator(1, 200);
+
+    for(size_t i = 0; i < 30; ++i)
+    {
+        intVector.push_back(generator(engine));
+    }
+
+    for(int64_t iter : intVector){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    Sorter::MergeSorter::sort(intVector.begin(), intVector.end());
 
     for(int64_t iter : intVector){
         cout << iter << " ";

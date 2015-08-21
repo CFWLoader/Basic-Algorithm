@@ -8,20 +8,19 @@
 #include <iterator>
 #include <utility>
 
-//#define DEBUGGING
+#include <vector>
 
-#ifdef DEBUGGING
-#include <iostream>
-
-#endif
+#include "Comparator.hpp"
 
 namespace Sorter
 {
     class BubbleSorter
     {
     public:
-        template<typename RandomAccessIterator, typename KeyCompareMethod>
-        static void sort(RandomAccessIterator begin, RandomAccessIterator end, KeyCompareMethod compareMethod)
+        template<typename RandomAccessIterator, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(RandomAccessIterator begin,
+                         RandomAccessIterator end,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
         {
             RandomAccessIterator theBegin, next, theEnd = end;
 
@@ -50,23 +49,25 @@ namespace Sorter
     class InsertSorter
     {
     public:
-        template <typename RandomAccessIterator, typename KeyCompareMethod>
-        static void sort(RandomAccessIterator begin, RandomAccessIterator end, KeyCompareMethod compareMethod)
+        template<typename RandomAccessIterator, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(RandomAccessIterator begin,
+                         RandomAccessIterator end,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
         {
-            if(begin == end)
+            if (begin == end)
             {
                 return;
             }
 
             RandomAccessIterator iterator1, rail, currentEnd = begin + 1;
 
-            while(currentEnd != end)
+            while (currentEnd != end)
             {
                 iterator1 = begin;
 
-                while(iterator1 != currentEnd)
+                while (iterator1 != currentEnd)
                 {
-                    if(!compareMethod(*iterator1, *currentEnd))
+                    if (!compareMethod(*iterator1, *currentEnd))
                     {
                         break;
                     }
@@ -76,7 +77,7 @@ namespace Sorter
 
                 rail = currentEnd;
 
-                while(rail != iterator1)
+                while (rail != iterator1)
                 {
                     std::swap(*rail, *(rail - 1));
 
@@ -92,10 +93,12 @@ namespace Sorter
     class SelectSorter
     {
     public:
-        template <typename RandomAccessIterator, typename KeyCompareMethod>
-        static void sort(RandomAccessIterator begin, RandomAccessIterator end, KeyCompareMethod compareMethod)
+        template<typename RandomAccessIterator, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(RandomAccessIterator begin,
+                         RandomAccessIterator end,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
         {
-            if(begin == end)
+            if (begin == end)
             {
                 return;
             }
@@ -110,7 +113,7 @@ namespace Sorter
 
                 while (iterator1 != end)
                 {
-                    if(compareMethod(*iterator1, *minPosition))
+                    if (compareMethod(*iterator1, *minPosition))
                     {
                         minPosition = iterator1;
                     }
@@ -118,7 +121,7 @@ namespace Sorter
                     ++iterator1;
                 }
 
-                if(currentHead != minPosition)
+                if (currentHead != minPosition)
                 {
                     std::swap(*currentHead, *minPosition);
                 }
@@ -131,34 +134,32 @@ namespace Sorter
     class QuickSorter
     {
     public:
-        template <typename RandomAccessIterator, typename KeyCompareMethod>
-        static void sort(RandomAccessIterator theLeft, RandomAccessIterator theRight, KeyCompareMethod compareMethod)
+        template<typename RandomAccessIterator, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(RandomAccessIterator theLeft,
+                         RandomAccessIterator theRight,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
         {
-            if(std::distance(theLeft, theRight) <= 0)
+            if (std::distance(theLeft, theRight) <= 0)
             {
                 return;
             }
 
-            RandomAccessIterator left = theLeft, right = theRight, pivotPosition = theLeft;
+            RandomAccessIterator left = theLeft, right = theRight - 1, pivotPosition = theLeft;
 
             typename RandomAccessIterator::value_type pivot = *pivotPosition;
 
-            #ifdef DEBUGGING
-            std::cout << "Pivot: " << pivot << std::endl;
-            #endif
-
-            while(std::distance(left, right) > 0)
+            while (std::distance(left, right) > 0)
             {
-                while((std::distance(left, right)) > 0 && compareMethod(pivot, *right))
+                while ((std::distance(left, right)) > 0 && compareMethod(pivot, *right))
                 {
                     --right;
                 }
-                while((std::distance(left, right)) > 0 && compareMethod(*left, pivot))
+                while ((std::distance(left, right)) > 0 && compareMethod(*left, pivot))
                 {
                     ++left;
                 }
 
-                if(std::distance(left, right) > 0)
+                if (std::distance(left, right) > 0)
                 {
                     std::swap(*left, *right);
                 }
@@ -166,8 +167,77 @@ namespace Sorter
 
             std::swap(*left, *pivotPosition);
 
-            QuickSorter::sort(theLeft, left - 1, compareMethod);
+            QuickSorter::sort(theLeft, left, compareMethod);
             QuickSorter::sort(left + 1, theRight, compareMethod);
+        }
+    };
+
+    class MergeSorter
+    {
+    public:
+        template<typename RandomAccessIterator, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(RandomAccessIterator begin,
+                         RandomAccessIterator end,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
+        {
+            if ((begin == end) || ((begin + 1) == end))
+            {
+                return;
+            }
+
+            int length = std::distance(begin, end);
+
+            MergeSorter::sort(begin, begin + length / 2, compareMethod);
+            MergeSorter::sort(begin + length / 2, end, compareMethod);
+
+            std::vector<typename RandomAccessIterator::value_type> valueVector1(begin, begin + length / 2),
+                    valueVector2(begin + length / 2, end);
+
+            RandomAccessIterator iterator1 = begin;
+
+            typename std::vector<typename RandomAccessIterator::value_type>::const_iterator valueIterator1 = valueVector1.begin(),
+                    valueIterator2 = valueVector2.begin();
+
+            while (valueIterator1 != valueVector1.end() && valueIterator2 != valueVector2.end())
+            {
+                if(compareMethod(*valueIterator1, *valueIterator2))
+                {
+                    *iterator1 = *valueIterator1;
+
+                    ++valueIterator1;
+                }
+                else
+                {
+                    *iterator1 = *valueIterator2;
+
+                    ++valueIterator2;
+                }
+
+                ++iterator1;
+            }
+
+            if(valueIterator1 != valueVector1.end())
+            {
+                while (valueIterator1 != valueVector1.end())
+                {
+                    *iterator1 = *valueIterator1;
+
+                    ++valueIterator1;
+
+                    ++iterator1;
+                }
+            }
+            else
+            {
+                while (valueIterator2 != valueVector2.end())
+                {
+                    *iterator1 = *valueIterator2;
+
+                    ++valueIterator2;
+
+                    ++iterator1;
+                }
+            }
         }
     };
 }

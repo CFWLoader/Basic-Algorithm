@@ -12,7 +12,8 @@ namespace Comparator
     class KeyLess
     {
     public:
-        bool operator()(int64_t a,int64_t b)
+        template<typename CompareType>
+        bool operator()(CompareType a,CompareType b)
         {
             if(a > b)
             {
@@ -28,7 +29,8 @@ namespace Comparator
     class KeyLarger
     {
     public:
-        bool operator()(int64_t a, int64_t b)
+        template<typename CompareType>
+        bool operator()(CompareType a, CompareType b)
         {
             if(a > b)
             {
