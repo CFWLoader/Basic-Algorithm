@@ -9,6 +9,7 @@
 #include <utility>
 
 #include <vector>
+#include <array>
 
 #include "Comparator.hpp"
 
@@ -238,6 +239,69 @@ namespace Sorter
                     ++iterator1;
                 }
             }
+        }
+    };
+
+    class HeapSorter
+    {
+    public:
+        template <typename ValueType, size_t arraySize, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(std::array<ValueType, arraySize>& sortingArray,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
+        {
+            //Building the heap.
+            for(size_t index = (arraySize - 1) / 2; index >= 0; --index)
+            {
+                HeapSorter::heapify(sortingArray, index);
+            }
+
+            std::cout << "Heapified." << std::endl;
+
+            for(size_t index = arraySize - 1; index > 0; --index)
+            {
+                std::swap(sortingArray[0], sortingArray[index]);
+
+                HeapSorter::heapify(sortingArray, index, index + 1);
+            }
+        }
+
+        template <typename ValueType, size_t arraySize, typename KeyCompareMethod = Comparator::KeyLess>
+        static void heapify(std::array<ValueType, arraySize>& sortingArray, size_t index, size_t heapSize = arraySize,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
+        {
+            size_t targetIndex = index;
+
+            if(HeapSorter::left(index) < heapSize &&
+                    compareMethod(sortingArray[targetIndex], sortingArray[HeapSorter::left(index)]))
+            {
+                targetIndex = HeapSorter::left(index);
+            }
+            else if(HeapSorter::right(index) < heapSize &&
+                    compareMethod(sortingArray[targetIndex], sortingArray[HeapSorter::right(index)]))
+            {
+                targetIndex = HeapSorter::right(index);
+            }
+
+            if(targetIndex != index)
+            {
+                std::swap(sortingArray[targetIndex], sortingArray[index]);
+
+                HeapSorter::heapify(sortingArray, targetIndex);
+            }
+        }
+
+        static size_t left(size_t index)
+        {
+            if(index == 0)return 1;
+
+            return 2 * index - 1;
+        }
+
+        static size_t right(size_t index)
+        {
+            if(index == 0)return 2;
+
+            return 2 * index;
         }
     };
 }

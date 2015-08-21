@@ -18,13 +18,15 @@ int testQuickSorter();
 
 int testMergeSorter();
 
+int testHeapSorter();
+
 int main() {
 
     //testSelectSorter();
 
     //cout << endl;
 
-    return testMergeSorter();
+    return testHeapSorter();
 }
 
 int testBubbleSorter()
@@ -180,4 +182,35 @@ int testMergeSorter()
     cout << endl;
 
     return 0;
+}
+
+int testHeapSorter()
+{
+    array<int64_t, 20> valueArray;
+
+    default_random_engine engine(static_cast<unsigned int>(time(0)));
+
+    uniform_int_distribution<int64_t> generator(1, 200);
+
+    for(size_t i = 0; i < 20; ++i)
+    {
+        valueArray[i] = generator(engine);
+    }
+
+    for(auto iter : valueArray){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    Sorter::HeapSorter::sort(valueArray);
+
+    for(auto iter : valueArray){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+
 }
