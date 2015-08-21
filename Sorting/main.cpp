@@ -20,13 +20,15 @@ int testMergeSorter();
 
 int testHeapSorter();
 
+int testCountingSorter();
+
 int main() {
 
     //testSelectSorter();
 
     //cout << endl;
 
-    return testHeapSorter();
+    return testCountingSorter();
 }
 
 int testBubbleSorter()
@@ -213,4 +215,34 @@ int testHeapSorter()
 
     return 0;
 
+}
+
+int testCountingSorter()
+{
+    array<int64_t, 30> valueArray;
+
+    default_random_engine engine(static_cast<unsigned int>(time(0)));
+
+    uniform_int_distribution<int64_t> generator(1, 20);
+
+    for(size_t i = 0; i < 30; ++i)
+    {
+        valueArray[i] = generator(engine);
+    }
+
+    for(auto iter : valueArray){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    Sorter::CountingSorter::sort<int64_t, 30, 20>(valueArray);
+
+    for(auto iter : valueArray){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    return 0;
 }

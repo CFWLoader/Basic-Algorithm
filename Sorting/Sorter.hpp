@@ -299,6 +299,44 @@ namespace Sorter
             return 2 * (index + 1);
         }
     };
+
+    class CountingSorter
+    {
+    public:
+        template <typename ValueType, size_t arraySize, uint64_t maxValue, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(std::array<ValueType, arraySize>& sortingArray,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
+        {
+            std::array<ValueType, arraySize> bArray;
+            std::array<ValueType, maxValue + 1> cArray;
+
+            for(int i = 0; i <= maxValue; ++i)
+            {
+                cArray[i] = 0;
+            }
+
+            for(int i = 0; i < arraySize; ++i)
+            {
+                ++cArray[sortingArray[i]];
+            }
+
+            for(int i = 0; i <= maxValue; ++i)
+            {
+                cArray[i] += cArray[i - 1];
+            }
+
+            for(int i = 0; i < arraySize; ++i)
+            {
+                bArray[cArray[sortingArray[i]]] = sortingArray[i];
+                --cArray[sortingArray[i]];
+            }
+
+            for(int i = 0; i < arraySize; ++i)
+            {
+                sortingArray[i] = bArray[i];
+            }
+        }
+    };
 }
 
 #endif //SORTING_SORTER_HPP
