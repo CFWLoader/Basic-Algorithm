@@ -223,7 +223,7 @@ int testCountingSorter()
 
     default_random_engine engine(static_cast<unsigned int>(time(0)));
 
-    uniform_int_distribution<int64_t> generator(1, 20);
+    uniform_int_distribution<int64_t> generator(0, 20);
 
     for(size_t i = 0; i < 30; ++i)
     {

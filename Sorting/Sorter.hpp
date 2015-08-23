@@ -320,7 +320,7 @@ namespace Sorter
                 ++cArray[sortingArray[i]];
             }
 
-            for(int i = 0; i <= maxValue; ++i)
+            for(int i = 1; i <= maxValue; ++i)
             {
                 cArray[i] += cArray[i - 1];
             }
