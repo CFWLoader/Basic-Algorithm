@@ -327,8 +327,20 @@ namespace Sorter
 
             for(int i = 0; i < arraySize; ++i)
             {
-                bArray[cArray[sortingArray[i]]] = sortingArray[i];
+                // Due to the count is greater 1 than index, we need to minus 1 of the count to suit the index.
+                bArray[cArray[sortingArray[i]] - 1] = sortingArray[i];
+
                 --cArray[sortingArray[i]];
+
+                /*
+                if(bArray[cArray[sortingArray[i]] - 1] > maxValue)
+                {
+                    std::cout << "Limit break:" << std::endl;
+                    std::cout << sortingArray[i] << std::endl;
+                    std::cout << cArray[sortingArray[i]] << std::endl;
+                    std::cout << bArray[cArray[sortingArray[i]] - 1] << std::endl;
+                }
+                 */
             }
 
             for(int i = 0; i < arraySize; ++i)
