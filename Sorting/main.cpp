@@ -22,13 +22,17 @@ int testHeapSorter();
 
 int testCountingSorter();
 
+int testRadixSorter();
+
+int testBucketSorter();
+
 int main() {
 
     //testSelectSorter();
 
     //cout << endl;
 
-    return testCountingSorter();
+    return testBucketSorter();
 }
 
 int testBubbleSorter()
@@ -239,6 +243,67 @@ int testCountingSorter()
     Sorter::CountingSorter::sort<int64_t, 30, 20>(valueArray);
 
     for(auto iter : valueArray){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+
+int testRadixSorter()
+{
+    array<int64_t, 30> valueArray;
+
+    default_random_engine engine(static_cast<unsigned int>(time(0)));
+
+    uniform_int_distribution<int64_t> generator(0, 20);
+
+    for(size_t i = 0; i < 30; ++i)
+    {
+        valueArray[i] = generator(engine);
+    }
+
+    for(auto iter : valueArray){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    Sorter::RadixSorter::sort<int64_t, 30, 20>(valueArray);
+
+    for(auto iter : valueArray){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+
+int testBucketSorter()
+{
+    vector<int64_t> intVector;
+
+    default_random_engine engine(static_cast<unsigned int>(time(0)));
+
+    uniform_int_distribution<int64_t> generator(1, 200);
+
+    for(size_t i = 0; i < 30; ++i)
+    {
+        intVector.push_back(generator(engine));
+    }
+
+    for(int64_t iter : intVector){
+        cout << iter << " ";
+    }
+
+    cout << endl;
+
+    Sorter::BucketSorter::sort(intVector.begin(), intVector.end());
+    //Sorter::QuickSorter::sort(intVector.begin(), intVector.end(), Comparator::KeyLess());
+
+    for(int64_t iter : intVector){
         cout << iter << " ";
     }
 

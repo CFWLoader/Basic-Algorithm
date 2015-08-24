@@ -349,6 +349,113 @@ namespace Sorter
             }
         }
     };
+
+    class RadixSorter
+    {
+    public:
+        template <typename ValueType, size_t arraySize, uint64_t maxValue, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(std::array<ValueType, arraySize>& sortingArray,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
+        {
+            for(int i = 0; i < arraySize; ++i)
+            {
+                CountingSorter::sort<ValueType, arraySize, maxValue, KeyCompareMethod>(sortingArray);
+            }
+        }
+    };
+
+    class BucketSorter
+    {
+    public:
+        template<typename ValueType>
+        struct Node
+        {
+            ValueType value;
+
+            Node* next;
+
+            Node() : value(), next(0)
+            {}
+
+            Node(const ValueType& refValue) : value(refValue), next(0)
+            {}
+        };
+
+        template<typename RandomAccessIterator, typename KeyCompareMethod = Comparator::KeyLess>
+        static void sort(RandomAccessIterator begin,
+                         RandomAccessIterator end,
+                         KeyCompareMethod compareMethod = KeyCompareMethod())
+        {
+            int containerSize = std::distance(begin, end);
+
+            if(containerSize <= 0)return;
+
+            Node<typename RandomAccessIterator::value_type>* bucketHeaders = new Node<typename RandomAccessIterator::value_type>[containerSize];
+
+            Node<typename RandomAccessIterator::value_type>* ptr = nullptr;
+
+            bool inserted = false;
+
+            //Build the bucket.The elements are being sorted in this process.
+            for(auto iterator1 = begin; iterator1 != end; ++iterator1)
+            {
+                ptr = &bucketHeaders[(*iterator1 / containerSize)];
+
+                inserted = false;
+
+                while(ptr->next != nullptr)
+                {
+                    //Sorting.
+                    if(compareMethod(*iterator1, ptr->next->value))
+                    {
+                        auto tempNext = ptr->next;
+
+                        ptr->next = new Node<typename RandomAccessIterator::value_type>(*iterator1);
+
+                        ptr->next->next = tempNext;
+
+                        inserted = true;
+
+                        break;
+                    }
+                }
+
+                if(!inserted)
+                {
+                    ptr->next = new Node<typename RandomAccessIterator::value_type>(*iterator1);
+                }
+            }
+
+            Node<typename RandomAccessIterator::value_type>* prev = nullptr, *min = nullptr;
+
+            for(auto item = begin; item != end; ++item)
+            {
+                for(int i = 0; i < containerSize; ++i)
+                {
+                    if(bucketHeaders[i].next != nullptr && min == nullptr)
+                    {
+                        prev = &bucketHeaders[i];
+
+                        min = bucketHeaders[i].next;
+                    }
+                    else if(bucketHeaders[i].next != nullptr && min != nullptr)
+                    {
+                        if(compareMethod(min->value, bucketHeaders[i].next->value))
+                        {
+                            prev = &bucketHeaders[i];
+                            min = bucketHeaders[i].next;
+                        }
+                    }
+
+                    *item = min->value;
+
+                    prev->next = min->next;
+
+                    delete min;
+                }
+            }
+        }
+    };
 }
 
 #endif //SORTING_SORTER_HPP
