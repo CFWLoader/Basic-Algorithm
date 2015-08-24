@@ -418,6 +418,8 @@ namespace Sorter
 
                         break;
                     }
+
+                    ptr = ptr->next;
                 }
 
                 if(!inserted)
@@ -426,10 +428,28 @@ namespace Sorter
                 }
             }
 
+            /*
+            for(int i = 0; i < containerSize; ++i)
+            {
+                auto element = &bucketHeaders[i];
+
+                while(element->next != nullptr)
+                {
+                    std::cout << element->next->value << " ";
+
+                    element = element->next;
+                }
+
+                std::cout << std::endl;
+            }
+             */
+
             Node<typename RandomAccessIterator::value_type>* prev = nullptr, *min = nullptr;
 
             for(auto item = begin; item != end; ++item)
             {
+                min = nullptr;
+
                 for(int i = 0; i < containerSize; ++i)
                 {
                     if(bucketHeaders[i].next != nullptr && min == nullptr)
@@ -440,13 +460,16 @@ namespace Sorter
                     }
                     else if(bucketHeaders[i].next != nullptr && min != nullptr)
                     {
-                        if(compareMethod(min->value, bucketHeaders[i].next->value))
+                        if(!compareMethod(min->value, bucketHeaders[i].next->value))
                         {
                             prev = &bucketHeaders[i];
                             min = bucketHeaders[i].next;
                         }
                     }
+                }
 
+                if(min != nullptr)
+                {
                     *item = min->value;
 
                     prev->next = min->next;
