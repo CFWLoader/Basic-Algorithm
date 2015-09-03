@@ -3,3 +3,11 @@
 //
 
 #include "MatrixChain.h"
+
+MatrixChain::MatrixChain(const std::vector<int> &matrixDimensions) {
+
+}
+
+void MatrixChain::calculate() {
+
+}
