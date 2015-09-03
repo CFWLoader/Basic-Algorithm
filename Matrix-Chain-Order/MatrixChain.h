@@ -13,9 +13,15 @@ public:
 
     explicit MatrixChain(const std::vector<int>& matrixDimensions);
 
-    void calculate();
+    void calculate ();
+
+    std::vector<std::vector<int>>& getCostMatrix();
+
+    std::vector<std::vector<int>>& getTraceMatrix();
 
 private:
+
+    static int INFINITY_COST;
 
     std::vector<int> dimensions_;
 
