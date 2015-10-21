@@ -1,5 +1,6 @@
 __author__ = 'cfwloader'
 
+# It will get WA when nums1 = [2, 3, 4], nums2 [1]
 class Solution(object):
     def findMedianSortedArrays(self, nums1, nums2):
         """
@@ -44,23 +45,25 @@ class Solution(object):
 
     def findKth(self, nums1, nums2, left1, right1, left2, right2, k):
 
-        mid1 = int(float(right1 / (right1 + right2)) * (k - 1))
-        mid2 = (k-1) - mid1
+        if left1 > right1:
+            return float(nums2[left2 + k - 1])
 
-        nums1LeftBoundReached = False if mid1 > left1 else True
-        nums1RightBoundReached = False if mid1 <= right1 else True
-        nums2LeftBoundReached = False if mid2 > left2 else True
-        nums2RightBoundReached = False if mid2 <= right2 else True
+        if left2 > right2:
+            return float(nums1[left1 + k - 1])
 
+        mid1 = left1 + int((right1 - left1) / 2)
 
+        mid2 = left2 + int((right2 - left2) / 2)
 
+        halfPosition = mid1 - left1 + mid2 - left2 + 2
 
-if __name__ == '__main__':
-
-    nums1 = [2, 3, 4]
-    nums2 = [1]
-
-    solution = Solution()
-
-    # print(solution.findMedianSortedArrays(nums1, nums2))
-    # print (solution.findKth(nums1, nums2, 0, len(nums1) - 1, 0, len(nums2) - 2, 2))
+        if nums1[mid1] < nums2[mid2]:
+            if halfPosition > k:
+                return self.findKth(nums1, nums2, left1, right1, left2, mid2 - 1, k)
+            else:
+                return self.findKth(nums1, nums2, mid1 + 1, right1, left2, right2, k - (mid1 - left1 + 1))
+        else:
+            if halfPosition > k:
+                return self.findKth(nums1, nums2, left1, mid1 - 1, left2, mid2 - 1, k)
+            else:
+                return self.findKth(nums1, nums2, left1, right1, mid2 + 1, right2, k - (mid2 - left2 + 1))
