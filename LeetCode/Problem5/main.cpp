@@ -10,17 +10,16 @@ public:
     string longestPalindrome(string s)
     {
 
-        string::const_iterator targetHead = s.end(), targetEnd = s.end();
+        string::const_iterator targetHead = s.begin(), targetEnd = s.end();
 
         int stringBound = s.size();
 
         int leftIndex = 0, rightIndex = 0, palindromeSize = 1, currentPalindromeSize;
 
-        int left, right;
+        int left, right, distance;
 
-        for (int palidromePivot = 0; palidromePivot < stringBound; palidromePivot = rightIndex)
+        for (int palidromePivot = 0; palidromePivot < stringBound; ++palidromePivot)    // The increment of variable palidromePivot can be optimized.
         {
-            cout << palidromePivot << endl;
 
             leftIndex = palidromePivot - 1, rightIndex = palidromePivot + 1;
 
@@ -34,12 +33,7 @@ public:
 
             while (leftIndex >= 0 and rightIndex < stringBound)
             {
-                if (s[leftIndex] != s[rightIndex])
-                {
-                    ++leftIndex, --rightIndex;
-
-                    break;
-                }
+                if (s[leftIndex] != s[rightIndex])break;
 
                 --leftIndex, ++rightIndex;
 
@@ -48,20 +42,24 @@ public:
 
             if (currentPalindromeSize > palindromeSize)
             {
+                palindromeSize = currentPalindromeSize;
+
                 targetHead = s.begin(), targetEnd = s.begin();
 
-                if(leftIndex < 0 or rightIndex >= stringBound)
-                {
-                    left = leftIndex + 1, right = rightIndex - 1;
-                }
-                else
-                {
-                    left = leftIndex, right = rightIndex;
-                }
+                left = leftIndex + 1, right = rightIndex;
 
                 advance(targetHead, left);
-                advance(targetEnd, right + 1);
+                advance(targetEnd, right);
+
+                //cout << string(targetHead, targetEnd) << "  Start Index:" << left << "   Pivot:" << palidromePivot << "  End Index:" << right << endl;
+
             }
+
+            //distance = (palidromePivot - leftIndex - 1) < (rightIndex - palidromePivot) ? palidromePivot - leftIndex - 1: rightIndex - palidromePivot;
+
+            //distance = distance > 0 ? distance : 1;
+
+            //cout << distance << endl;
         }
 
         return string(targetHead, targetEnd);
@@ -72,7 +70,7 @@ int main()
 {
     Solution solution;
 
-    string str = "caba";
+    string str = "abadd";
 
     string result = solution.longestPalindrome(str);
 
