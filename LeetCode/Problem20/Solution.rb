@@ -16,23 +16,29 @@ def is_valid(s)
 
   strIndex = 0
 
-  stack[++stackTop] = s[strIndex]
+  stackTop += 1
 
-  ++strIndex
+  stack[stackTop] = s[strIndex]
+
+  strIndex += 1
 
   while strIndex < strSize
     if s[strIndex] == '(' or s[strIndex] == '[' or s[strIndex] == '{'
-      stack[++stackTop] = s[strIndex]
+
+      stackTop += 1
+
+      stack[stackTop] = s[strIndex]
     else
       if s[strIndex] == ')' and stack[stackTop] != '(' or s[strIndex] == ']' and stack[stackTop] != '[' or s[strIndex] == '}' and stack[stackTop] != '{'
           return false
       end
 
-      --stackTop
+      stackTop -= 1
 
     end
 
-    ++strIndex
+    strIndex += 1
+
   end
 
   if stackTop >= 0
