@@ -15,11 +15,13 @@ def longest_increasing_path(matrix)
       cols = arr.size
     end }
 
-  cellRecords = Array.new(rows, Array.new(cols, [1, 'N']))
+  cellRecords = Array.new(rows, Array.new(cols, [0, 'N']))
 
-  rowIndex = 0, colIndex = 0
+  rowIndex =0; colIndex = 0
 
-  maxValue = 0, direction = 'N'
+  updateRowIndex = 0; updateColIndex = 0
+
+  maxValue = 0; direction = :N
 
   maxPathCount = 1
 
@@ -32,22 +34,67 @@ def longest_increasing_path(matrix)
     row.each do |cell|
 
       # Select a max value adjacencies.
-      maxValue = 0, direction = 'N'
+      maxValue = 0; direction = :N
 
       if rowIndex - 1 > -1 and matrix[rowIndex - 1][colIndex] > cell and cellRecords[rowIndex - 1][colIndex][0] > maxValue
-        maxValue = cellRecords[rowIndex - 1][colIndex][0], direction = 'U'
+        maxValue = cellRecords[rowIndex - 1][colIndex][0]; direction = :U
       end
 
       if colIndex - 1 > -1 and matrix[rowIndex][colIndex - 1] > cell and cellRecords[rowIndex][colIndex - 1][0] > maxValue
-        maxValue = cellRecords[rowIndex][colIndex - 1][0], direction = 'L'
+        maxValue = cellRecords[rowIndex][colIndex - 1][0]; direction = :L
       end
 
       if rowIndex + 1 < rows and matrix[rowIndex + 1][colIndex] > cell and cellRecords[rowIndex + 1][colIndex][0] > maxValue
-        maxValue = cellRecords[rowIndex + 1][colIndex][0], direction = 'D'
+        maxValue = cellRecords[rowIndex + 1][colIndex][0]; direction = :D
       end
 
-      if colIndex + 1 < cols and matrix[rowIndex][colIndex + 1] > cell and cellRecords[rowIndex + 1][colIndex][0] > maxValue
-        maxValue = cellRecords[rowIndex][colIndex + 1][0], direction = 'R'
+      if colIndex + 1 < cols and matrix[rowIndex][colIndex + 1] > cell and cellRecords[rowIndex][colIndex + 1][0] > maxValue
+        maxValue = cellRecords[rowIndex][colIndex + 1][0]; direction = :R
+      end
+
+      cellRecords[rowIndex][colIndex] = [1, direction]
+
+      print "Col 1 values: #{cellRecords[0][0]} #{cellRecords[1][0]} #{cellRecords[2][0]}   "
+
+      print "(#{rowIndex}, #{colIndex}, #{cellRecords[rowIndex][colIndex]})"
+
+      # Update Path
+      updateRowIndex = rowIndex; updateColIndex = colIndex
+
+      currentPathCount = 1
+
+      # print "#{updateRowIndex}, #{updateColIndex}\n"
+
+      print "Updating Path.\n"
+      until direction == :N
+
+        print "(#{updateRowIndex}, #{updateColIndex}, #{cellRecords[updateRowIndex][updateColIndex]})->"
+        case cellRecords[updateRowIndex][updateColIndex][1]
+          when :U
+            cellRecords[updateRowIndex - 1][updateColIndex][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            updateRowIndex -= 1
+          when :L
+            cellRecords[updateRowIndex][updateColIndex - 1][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            updateColIndex -= 1
+          when :D
+            cellRecords[updateRowIndex + 1][updateColIndex][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            updateRowIndex += 1
+          when :R
+            cellRecords[updateRowIndex][updateColIndex + 1][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            updateColIndex += 1
+          else
+            break
+        end
+
+        direction = cellRecords[updateRowIndex][updateColIndex][1]
+
+        currentPathCount += 1
+      end
+
+      print "(#{updateRowIndex}, #{updateColIndex}, #{cellRecords[updateRowIndex][updateColIndex]})\nUpdate path end.\n"
+
+      if currentPathCount > maxPathCount
+        maxPathCount = currentPathCount
       end
 
       colIndex += 1
@@ -58,7 +105,12 @@ def longest_increasing_path(matrix)
 
   end
 
+  maxPathCount
 end
 
 
-puts longest_increasing_path [[1,1], [1,1]]
+puts longest_increasing_path [
+                                 [9, 9, 4],
+                                 [6, 6, 8],
+                                 [2, 1, 1]
+                             ]
