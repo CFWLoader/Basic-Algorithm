@@ -15,7 +15,25 @@ def longest_increasing_path(matrix)
       cols = arr.size
     end }
 
-  cellRecords = Array.new(rows, Array.new(cols, [0, 'N']))
+  cellRecords = Array.new(rows)
+
+  rowIndex =0; colIndex = 0
+
+  while rowIndex < rows
+
+    cellRecords[rowIndex] = Array.new(cols)
+
+    colIndex = 0
+
+    while colIndex < cols
+
+      cellRecords[rowIndex][colIndex] = [0, :N]
+
+      colIndex += 1
+    end
+
+    rowIndex += 1
+  end
 
   rowIndex =0; colIndex = 0
 
@@ -52,11 +70,9 @@ def longest_increasing_path(matrix)
         maxValue = cellRecords[rowIndex][colIndex + 1][0]; direction = :R
       end
 
-      cellRecords[rowIndex][colIndex] = [1, direction]
+      cellRecords[rowIndex][colIndex] = [maxValue + 1, direction]
 
-      print "Col 1 values: #{cellRecords[0][0]} #{cellRecords[1][0]} #{cellRecords[2][0]}   "
-
-      print "(#{rowIndex}, #{colIndex}, #{cellRecords[rowIndex][colIndex]})"
+      # print "(#{rowIndex}, #{colIndex}, #{cellRecords[rowIndex][colIndex]})"
 
       # Update Path
       updateRowIndex = rowIndex; updateColIndex = colIndex
@@ -65,22 +81,22 @@ def longest_increasing_path(matrix)
 
       # print "#{updateRowIndex}, #{updateColIndex}\n"
 
-      print "Updating Path.\n"
+      # print "Updating Path.\n"
       until direction == :N
 
-        print "(#{updateRowIndex}, #{updateColIndex}, #{cellRecords[updateRowIndex][updateColIndex]})->"
+        # print "(#{updateRowIndex}, #{updateColIndex}, #{cellRecords[updateRowIndex][updateColIndex]})->"
         case cellRecords[updateRowIndex][updateColIndex][1]
           when :U
-            cellRecords[updateRowIndex - 1][updateColIndex][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            cellRecords[updateRowIndex - 1][updateColIndex][0] = cellRecords[updateRowIndex][updateColIndex][0] - 1
             updateRowIndex -= 1
           when :L
-            cellRecords[updateRowIndex][updateColIndex - 1][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            cellRecords[updateRowIndex][updateColIndex - 1][0] = cellRecords[updateRowIndex][updateColIndex][0] - 1
             updateColIndex -= 1
           when :D
-            cellRecords[updateRowIndex + 1][updateColIndex][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            cellRecords[updateRowIndex + 1][updateColIndex][0] = cellRecords[updateRowIndex][updateColIndex][0] - 1
             updateRowIndex += 1
           when :R
-            cellRecords[updateRowIndex][updateColIndex + 1][0] = cellRecords[updateRowIndex][updateColIndex][0] + 1
+            cellRecords[updateRowIndex][updateColIndex + 1][0] = cellRecords[updateRowIndex][updateColIndex][0] - 1
             updateColIndex += 1
           else
             break
@@ -91,7 +107,7 @@ def longest_increasing_path(matrix)
         currentPathCount += 1
       end
 
-      print "(#{updateRowIndex}, #{updateColIndex}, #{cellRecords[updateRowIndex][updateColIndex]})\nUpdate path end.\n"
+      # print "(#{updateRowIndex}, #{updateColIndex}, #{cellRecords[updateRowIndex][updateColIndex]})\nUpdate path end.\n"
 
       if currentPathCount > maxPathCount
         maxPathCount = currentPathCount
@@ -105,6 +121,13 @@ def longest_increasing_path(matrix)
 
   end
 
+  cellRecords.each do |row|
+    row.each do |cell|
+      print "#{cell} "
+    end
+    puts
+  end
+
   maxPathCount
 end
 
@@ -113,4 +136,10 @@ puts longest_increasing_path [
                                  [9, 9, 4],
                                  [6, 6, 8],
                                  [2, 1, 1]
+                             ]
+
+puts longest_increasing_path [
+                                 [3,4,5],
+                                 [3,2,6],
+                                 [2,2,1]
                              ]
