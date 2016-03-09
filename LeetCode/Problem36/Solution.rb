@@ -14,8 +14,7 @@ def is_valid_sudoku(board)
   board.each do |row|
     row.each_char do |cell|
       if cell != '.'
-        if presented[cell - '0']
-
+        if presented[cell.to_i]
         end
       end
     end
@@ -23,5 +22,5 @@ def is_valid_sudoku(board)
 end
 
 '0123456789'.each_char do |ch|
-  print ch - char('0')
+  print ch.to_i.class
 end
