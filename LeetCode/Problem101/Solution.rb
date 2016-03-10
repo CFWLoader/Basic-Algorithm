@@ -15,6 +15,10 @@ def is_symmetric(root)
     return true
   end
 
+  if root.left.nil? and root.right.nil?
+    return true
+  end
+
   leftVector = []
   rightVector = []
 
@@ -45,6 +49,9 @@ end
 def collect_left(node, vector)
 
   if node.nil?
+
+    vector << '#'
+
     return
   end
 
@@ -59,6 +66,9 @@ end
 def collect_right(node, vector)
 
   if node.nil?
+
+    vector << '#'
+
     return
   end
 
