@@ -16,13 +16,13 @@ def is_palindrome(s)
 
   while left < right
 
-    if formattedStr[left] < 'a' or formattedStr[left] > 'z'
+    unless (formattedStr[left] >= 'a' and formattedStr[left] <= 'z') or (formattedStr[left] >= '0' and formattedStr[left] <= '9')
       left += 1
 
       next
     end
 
-    if formattedStr[right] < 'a' or formattedStr[right] > 'z'
+    unless (formattedStr[right] >= 'a' and formattedStr[right] <= 'z') or (formattedStr[right] >= '0' and formattedStr[right] <= '9')
       right -= 1
 
       next
@@ -44,3 +44,7 @@ def is_palindrome(s)
 end
 
 puts is_palindrome 'A man, a plan, a canal: Panama'
+
+puts is_palindrome 'race a car'
+
+puts is_palindrome 'ab'
