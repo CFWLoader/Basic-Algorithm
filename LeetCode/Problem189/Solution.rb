@@ -9,38 +9,53 @@ def rotate(nums, k)
 
   array_length = nums.size
 
-  count = 0
-
   source_index = 0
 
-  buffer_value = nums[source_index]
+  current_buffer_value = nums[source_index]
 
-  target_index = (source_index + k) % array_length
+  distance = 0
 
-  while count < array_length
-
-    # print "S: #{source_index}-#{nums[source_index]}, T: #{target_index}-#{nums[target_index]}, B: #{buffer_value}\n"
-
-    nums[target_index] = buffer_value
-
-    source_index = target_index
+  1.upto array_length do
 
     target_index = (source_index + k) % array_length
 
-    buffer_value = nums[target_index]
+    temp = nums[target_index]
 
-    print "S: #{source_index}-#{nums[source_index]}, T: #{target_index}-#{nums[target_index]}, B: #{buffer_value}\n"
+    nums[target_index] = current_buffer_value
 
-    # nums[target_index] = nums[source_index]
+    source_index = target_index
 
-    count += 1
+    current_buffer_value = temp
+
+    distance = (distance + k) % array_length
+
+    if distance == 0
+      source_index = (source_index + 1) % array_length
+
+      current_buffer_value = nums[source_index]
+    end
+
   end
 end
 
-source = [1, 2, 3, 4, 5, 6, 7]
+# source = [1, 2, 3, 4, 5, 6, 7]
+#
+# rotate source, 3
+#
+# print source
+#
+# puts
+#
+# source = [1,2,3,4,5,6]
+#
+# rotate source, 2
+#
+# print source                # Expected: [5,6,1,2,3,4]
+#
+# puts
+
+source = [1,2,3,4,5,6]
 
 rotate source, 3
 
-print source
-
-puts
+print source                # Expected: [4,5,6,1,2,3]
