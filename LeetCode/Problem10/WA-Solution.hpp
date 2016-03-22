@@ -2,7 +2,7 @@
 
 using std::string;
 
-class Solution
+class WA_Solution
 {
 public:
     bool isMatch(string s, string p)
