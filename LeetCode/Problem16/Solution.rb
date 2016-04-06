@@ -13,6 +13,10 @@ def three_sum_closest(nums, target)
 
   current_target = nums[0] + nums[1] + nums[2]
 
+  print nums
+
+  puts
+
   index = 0
 
   until index >= bound
@@ -22,6 +26,10 @@ def three_sum_closest(nums, target)
     until left >= right
 
       assumed_target = nums[index] + nums[left] + nums[right]
+
+      # print "1: #{nums[index]}, 2: #{nums[left]}, 3: #{nums[right]}  "
+
+      # print "Assumed: #{assumed_target} Abs: #{(assumed_target - target).abs}, Current: #{current_target} abs: #{(current_target - target).abs}\n"
 
       if (assumed_target - target).abs < (current_target - target).abs
         current_target = assumed_target
@@ -34,8 +42,11 @@ def three_sum_closest(nums, target)
         right -= 1
       end
 
-      left += 1
-      right -= 1
+      if  assumed_target < target
+        left += 1
+      else
+        right -= 1
+      end
 
     end
 
@@ -53,6 +64,7 @@ end
 
 # result = three_sum [1, 3, -1, 7, 2, 6, 0, 5]
 # result = three_sum_closest [-1, 2, 1, -4], 1
-result = three_sum_closest [0, 2, 1, -3], 1
+# result = three_sum_closest [0, 2, 1, -3], 1
+result = three_sum_closest [1,2,4,8,16,32,64,128], 82         # Expected 82
 
 print result
