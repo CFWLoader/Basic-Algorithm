@@ -16,7 +16,7 @@ def single_number(nums)
     # xnor_result &= num
   }
 
-  [xor_result]
+  [xor_result, xor_result ^ 3]
 
 end
 
