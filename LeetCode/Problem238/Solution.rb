@@ -8,11 +8,35 @@ def product_except_self(nums)
 
   result_set = Array.new nums.size, 1
 
+  product = 1
+
   nums.each_with_index { |val, idx|
 
-    print "#{val}, #{idx}\n"
+    result_set[idx] = product
+
+    product *= val
 
   }
 
+  idx = nums.size - 1
+
+  product = 1
+
+  until idx < 0
+
+    result_set[idx] *= product
+
+    product *= nums[idx]
+
+    idx -= 1
+
+  end
+
   result_set
 end
+
+result = product_except_self [1, 2, 3, 4]
+
+print result
+
+puts
