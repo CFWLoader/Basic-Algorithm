@@ -20,15 +20,14 @@ public:
         
         stack<TreeNode*> treeStack;
         
-        treeStack.push(root);
+        TreeNode* ptr = root;
         
-        TreeNode* ptr = NULL;
-        
-        while(!treeStack.empty())
+        while(ptr || !treeStack.empty())
         {
-            if(treeStack.top().left != NULL)
+            if(ptr != NULL)
             {
-                treeStack.push(treeStack.top().left);
+                treeStack.push(ptr);
+                ptr = ptr->left;
             }
             else
             {
@@ -37,10 +36,7 @@ public:
                 
                 resultSet.push_back(ptr->val);
                 
-                if(resultSet->right != NULL)
-                {
-                    treeStack.push(resultSet->right);
-                }
+                ptr = ptr->right;
             }
         }
         
