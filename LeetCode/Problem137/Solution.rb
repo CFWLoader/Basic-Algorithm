@@ -2,55 +2,26 @@
 # @return {Integer}
 def single_number(nums)
 
-  check_bit = 1
+  one = two = three = 0
 
-  result = 0
+  # Using bits statistic.
+  nums.each { |num|
+    # Counting the bits occurred three times, twice, once.
+    # The update sequence must be three times' count, twice's, once's because this can keep the date correctness.
+    three = two & num         # The bits occurred twice. Now occurred one more time.
+    two = two | one & num     # Occurred times is an even number.
+    one = one | num           # Occurred once.
 
-  while check_bit < 2**32
+    # Make the records are distinct(Delete the records of occurred three times in once's and twice).
+    one = one & ~three
+    two = two & ~three
+  }
 
-    change_count = 0
-
-    xor_result = 0
-
-    pre_xor = 0
-
-    nums.each { |num|
-      xor_result ^= num
-
-      if pre_xor & check_bit != xor_result & check_bit
-        change_count += 1
-      end
-    }
-
-    print "Bit Value: #{check_bit}, Count Value: #{change_count}.\n"
-
-    if change_count != 0 and change_count % 2 == 0
-      result |= check_bit
-    end
-
-    check_bit *= 2
-
-  end
-
-  result
-
-end
-
-def single_number_alpha(nums)
-
-  xor_result = 0x2f
-
-  nums.each { |num| xor_result ^= num}
-
-  xor_result
+  one
 
 end
 
 
-# puts single_number [8, 2, 11, 39, 5, 11, 39, 39, 2, 8, 11, 8, 2]
-#
-# puts single_number [1, 1, 1, 2, 3, 4, 4, 4, 2, 2]
+puts single_number [8, 2, 11, 39, 5, 11, 39, 39, 2, 8, 11, 8, 2]
 
-puts single_number_alpha [8, 2, 11, 39, 5, 11, 39, 39, 2, 8, 11, 8, 2]
-
-# puts single_number_alpha [1, 1, 1, 2, 3, 4, 4, 4, 2, 2]
+puts single_number [1, 1, 1, 2, 3, 4, 4, 4, 2, 2]
