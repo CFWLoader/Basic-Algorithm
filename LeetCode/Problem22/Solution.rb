@@ -33,7 +33,7 @@ def generate_parenthesis(n)
 
 end
 
-result_set = generate_parenthesis 3
+result_set = generate_parenthesis 4
 
 result_set.each {|element|
   puts element
