@@ -2,55 +2,47 @@
 # @return {String[][]}
 def solve_n_queens(n)
 
-  coordinates = Array.new n, 0
-
   result_set = Array.new
 
-  0.upto(n - 1) { |num|
-
-    coordinates[0] = num
-
-    if get_a_solution coordinates
-      result_set << construct_chessboard(coordinates)
-    end
+  get_solutions(n) { |coordinates|
+    result_set << construct_chessboard(coordinates)
   }
 
   result_set
 end
 
-def get_a_solution(coordinates)
+def get_solutions(n)
 
-  bound = coordinates.size
+  coordinates = Array.new n, -1
 
-  index = 1
+  placed = 0
 
-  placed = 1
+  while placed > -1
 
-  while placed > 0 and placed < coordinates.size
+    coordinates[placed] += 1
 
-    col_val = 0
-
-    while col_val < bound
-      coordinates[placed] = col_val
-
-      if is_valid coordinates, placed
-        placed += 1
-      else
-        placed -= 1
-      end
+    while placed < n and not is_valid coordinates, placed
+      coordinates[placed] += 1
     end
 
-    index += 1
-  end
+    if placed == n - 1 and coordinates[placed] < n
+      yield coordinates
+    elsif placed < n and coordinates[placed] < n
+      placed += 1
+      coordinates[placed] = -1
+    else
+      coordinates[placed] = -1
+      placed -= 1
+    end
 
-  placed == coordinates.size
+  end
 
 end
 
 def is_valid(coordinates, target)
 
   0.upto(target - 1) { |row|
-    if coordinates[target] == coordinates[row] || (target - row).abs == (coordinates[target] - coordinates[row])
+    if coordinates[target] == coordinates[row] || (target - row).abs == (coordinates[target] - coordinates[row]).abs
       return false
     end
   }
