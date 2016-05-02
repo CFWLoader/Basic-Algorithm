@@ -20,24 +20,6 @@ end
 
 def rob_max_val(root)
 
-  if root.nil?
-    return 0, 0
-  end
-
-  if root.left.nil? and root.right.nil?
-    return root.val, 0
-  end
-
-  left_present, left_absent = rob_max_val root.left
-
-  right_present, right_absent = rob_max_val root.right
-
-  root_present = root.val + left_absent + right_absent
-
-  root_absent = left_present + right_present
-
-  return root_present, root_absent
-
 end
 
 root1 = TreeNode.new 3
