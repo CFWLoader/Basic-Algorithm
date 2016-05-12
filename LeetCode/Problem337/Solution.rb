@@ -22,6 +22,7 @@ def rob_max_val(root)
   # TODO
   # I don't want doing anything recently.
   # Don't forget punching in.
+  # Writing other codes.
 end
 
 root1 = TreeNode.new 3
