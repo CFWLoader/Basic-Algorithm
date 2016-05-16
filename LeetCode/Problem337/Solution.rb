@@ -21,7 +21,7 @@ end
 def rob_max_val(root)
   # TODO
   # Writing paper is so painful.
-  # Still sticking.
+  # Paper skeleton is finished, adding fleshes.
 end
 
 root1 = TreeNode.new 3
