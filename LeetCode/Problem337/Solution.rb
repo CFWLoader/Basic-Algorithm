@@ -21,7 +21,6 @@ end
 def rob_max_val(root)
   # TODO
   # Writing paper is so painful.
-  # Paper script is finished. Recovering Coding mode.
 end
 
 root1 = TreeNode.new 3
