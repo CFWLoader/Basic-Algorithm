@@ -20,7 +20,6 @@ end
 
 def rob_max_val(root)
   # TODO
-  # Need to continue the coding?
 end
 
 root1 = TreeNode.new 3
