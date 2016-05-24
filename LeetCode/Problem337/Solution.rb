@@ -12,13 +12,36 @@ end
 # @return {Integer}
 def rob(root)
 
-  root_present, root_absent = rob_max_val root
+  with_root, without_root = traverse root
 
-  root_present > root_absent ? root_present : root_absent
+  max_val with_root, without_root
 
 end
 
-def rob_max_val(root)
+def max_val(a, b)
+  a > b ? a : b
+end
+
+def traverse(root)
+
+  l_max_with_root = 0; l_max_without_root = 0
+  r_max_with_root = 0; r_max_without_root = 0
+  max_with_root = 0; max_without_root = 0
+
+  unless root.nil?
+
+    l_max_with_root, l_max_without_root = traverse root.left
+
+    r_max_with_root, r_max_without_root = traverse root.right
+
+    max_with_root = l_max_without_root + r_max_without_root + root.val
+
+    max_without_root = max_val(l_max_with_root, l_max_without_root) + max_val(r_max_with_root, r_max_without_root)
+
+  end
+
+  return max_with_root, max_without_root
+
 end
 
 root1 = TreeNode.new 3
