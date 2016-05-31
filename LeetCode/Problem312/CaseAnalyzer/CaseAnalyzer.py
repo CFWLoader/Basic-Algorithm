@@ -8,9 +8,12 @@ class CaseNode:
 
 		self.datas = datas
 
+		self.parentSum = parentSum
+
 		self.coins = []
 
-		self.parentSum = parentSum
+		self.generateCoinsByRules()
+
 
 	def generateCoinsByRules(self):
 
@@ -49,22 +52,38 @@ class CaseAnalyzer:
 
 		self.filePath = filePath
 
+
 	def generateGraph(self):
 
 		graph = Digraph(comment = 'Case Tress')
 
 		rootNode = CaseNode(self.nodeNumberCounter, [3, 1, 5, 8], 0)
 
-		generateGraph(graph, rootNode)
+		generateGraph(graph, rootNode, 0)
 
 		graph.render(self.filePath)
 
-	def generateGraph(self, graph, caseNode):
+
+	def generateGraph(self, graph, caseNode, parentNodeNumber):
 
 		nodeNumberStr = '%d' % caseNode.nodeNumber
 
 		graph.node(nodeNumberStr, caseNode.__str__())
 
+		if parentNodeNumber > 0:
+
+			parentNodeNumberStr = '%d' % parentNodeNumber
+
+			graph.edge(parentNodeNumberStr, nodeNumberStr)
+
+		dataLenght = len(caseNode.datas)
+
+		if dataLenght < 1:
+			return
+
+		for idx in range(0, dataLenght):
+
+			
 
 
 
@@ -75,7 +94,5 @@ if __name__ == '__main__':
 	# generateGraph([3, 1, 5, 8], graph, None)			# [3, 1, 5, 8]
 
 	caseNode = CaseNode(1, [3, 1, 5, 8], 0)
-
-	caseNode.generateCoinsByRules()
 
 	print caseNode
