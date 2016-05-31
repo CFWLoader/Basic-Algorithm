@@ -59,12 +59,12 @@ class CaseAnalyzer:
 
 		rootNode = CaseNode(self.nodeNumberCounter, [3, 1, 5, 8], 0)
 
-		generateGraph(graph, rootNode, 0)
+		self._generateGraph(graph, rootNode, 0)
 
 		graph.render(self.filePath)
 
 
-	def generateGraph(self, graph, caseNode, parentNodeNumber):
+	def _generateGraph(self, graph, caseNode, parentNodeNumber):
 
 		nodeNumberStr = '%d' % caseNode.nodeNumber
 
@@ -83,7 +83,17 @@ class CaseAnalyzer:
 
 		for idx in range(0, dataLenght):
 
-			
+			self.nodeNumberCounter += 1
+
+			subArray = caseNode.datas[:]
+
+			popValue = subArray[idx]
+
+			subArray.pop(idx)
+
+			childNode = CaseNode(self.nodeNumberCounter, subArray, caseNode.parentSum + caseNode.coins[idx])
+
+			self._generateGraph(graph, childNode, caseNode.nodeNumber)
 
 
 
@@ -93,6 +103,10 @@ if __name__ == '__main__':
 
 	# generateGraph([3, 1, 5, 8], graph, None)			# [3, 1, 5, 8]
 
-	caseNode = CaseNode(1, [3, 1, 5, 8], 0)
+	# caseNode = CaseNode(1, [3, 1, 5, 8], 0)
 
-	print caseNode
+	# print caseNode
+
+	caseAnalyzer = CaseAnalyzer([3, 1, 5, 8])
+
+	caseAnalyzer.generateGraph()
