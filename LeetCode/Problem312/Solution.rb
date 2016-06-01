@@ -6,38 +6,31 @@ def max_coins(nums)
     return 0
   end
 
+  nums.unshift(1); nums << 1
+
   nums_size = nums.size
-
-  nums.unshift(1)
-
-  nums << 1
 
   dp_matrix = Array.new nums_size
 
-  0.upto(nums_size) do |idx| dp_matrix[idx] = Array.new nums_size, 0 end
+  0.upto(nums_size - 1) {|idx| dp_matrix[idx] = Array.new nums_size, 0}
 
-  1.upto(nums_size) {|len|
+  2.upto(nums_size - 1){|k|
 
-    l = 1
+    0.upto(nums_size - k - 1) {|left|
 
-    while l + len - 1 <= nums_size
+      right = left + k
 
-      r = l + len - 1
+      (left + 1).upto(right - 1){|i|
 
-      l.upto(r) {|k|
+        dp_left = dp_matrix[left][right]; dp_right = nums[left] * nums[i] * nums[right] + dp_matrix[left][i] + dp_matrix[i][right]
 
-        dp_left = dp_matrix[l][r]; dp_right = dp_matrix[l][k - 1] + dp_matrix[k + 1][r] + nums[l - 1] * nums[r + 1] * nums[k]
-
-        dp_matrix[l][r] = dp_left > dp_right ? dp_left : dp_right
+        dp_matrix[left][right] = dp_left > dp_right ? dp_left : dp_right
 
       }
-
-      l += 1
-
-    end
+    }
   }
 
-  dp_matrix[1][nums_size]
+  dp_matrix[0][nums_size - 1]
 
 end
 
