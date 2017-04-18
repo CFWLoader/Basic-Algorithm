@@ -50,7 +50,7 @@ def translate_record(record):
     if record[3] == 'y':
         items.append('aotbr')  # adoption-of-the-budget-resolution
 
-    if record[3] == 'n':
+    elif record[3] == 'n':
         items.append('aotbr-n')
 
     if record[4] == 'y':
@@ -72,7 +72,7 @@ def translate_record(record):
     if record[6] == 'y':
         items.append('rgis')  # religious-groups-in-schools
 
-    if record[6] == 'n':
+    elif record[6] == 'n':
         items.append('rgis-n')
 
     if record[7] == 'y':
@@ -142,13 +142,13 @@ def translate_record(record):
     if record[15] == 'y':
         items.append('dfe')  # duty-free-exports
 
-    if record[15] == 'n':
+    elif record[15] == 'n':
         items.append('dfe-n')
 
     if record[16] == 'y':
         items.append('eaasa')  # export-administration-act-south-africa
 
-    if record[16] == 'n':
+    elif record[16] == 'n':
         items.append('eaasa-n')
 
     return items
@@ -223,6 +223,7 @@ def has_infrequent_set(un_set, frozen_set):
             return True
 
     return False
+
 
 def apriori_gen(lk):
 
