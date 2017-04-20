@@ -171,11 +171,11 @@ class Apriori
 
     while final_sets[k - 1].size > 0
 
-      puts "Generating from #{k - 1}, size:#{final_sets[k - 1].size}, collection type: #{final_sets[k - 1].class}."
+      # puts "Generating from #{k - 1}, size:#{final_sets[k - 1].size}, collection type: #{final_sets[k - 1].class}."
 
       ck = apriori_gen final_sets[k - 1]
 
-      puts "Candidate[#{k}] size: #{ck.size}."
+      # puts "Candidate[#{k}] size: #{ck.size}."
 
       count_set = {}
 
@@ -420,12 +420,16 @@ if __FILE__ == $0
 
   vote_records = load_data './house-votes-84.data'
 
-  apri = Apriori.new vote_records, 100
+  apri = Apriori.new vote_records, 200
 
   fre_set = apri.generate_frequent_itemsets
 
   for ele in fre_set
-    puts ele.size
+
+    ele.display
+
+    puts
+
   end
 
   # for layer in fre_set
