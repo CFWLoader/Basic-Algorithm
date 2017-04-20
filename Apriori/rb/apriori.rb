@@ -126,7 +126,7 @@ class Apriori
 
       frozen_set.each{|ele2|
 
-        unless ele1.subset? ele2 and ele1.superset? ele2
+        unless ele1 == ele2
 
           un_set = ele1 + ele2
 
@@ -136,7 +136,16 @@ class Apriori
             raise Exception 'Set hasn\'t been frozen!'
           end
 
-          if un_set.size == set_size and not gen_set.include? un_set and not self.has_infrequent_set un_set, frozen_set
+          # print '{'
+          # un_set.each {|ele| print "\"#{ele}\""}
+          # print '}:'
+          #
+          # print "Set Size:#{un_set.size == set_size}, Include: #{gen_set.include? un_set}, InfrequentSub: #{self.has_infrequent_set un_set, frozen_set}."
+          # puts
+
+          if un_set.size == set_size and
+              not gen_set.include? un_set and
+              not self.has_infrequent_set un_set, frozen_set
 
             gen_set << un_set
 
@@ -146,8 +155,9 @@ class Apriori
 
       }
 
-      gen_set
     }
+
+    gen_set
 
   end
 
@@ -161,7 +171,7 @@ class Apriori
 
     while final_sets[k - 1].size > 0
 
-      puts "Generating from #{k - 1}, collection type: #{final_sets[k - 1].class}."
+      puts "Generating from #{k - 1}, size:#{final_sets[k - 1].size}, collection type: #{final_sets[k - 1].class}."
 
       ck = apriori_gen final_sets[k - 1]
 
@@ -197,11 +207,9 @@ class Apriori
 
       }
 
-      final_sets << Hash.new(verfied_count_set)
+      final_sets << verfied_count_set
 
       count_set.clear
-
-      verfied_count_set.clear
 
       k += 1
 
@@ -377,6 +385,7 @@ def translate_record record
   end
 
   if record[16] == 'y'
+
     items. << ('eaasa') # export-administration-act-south-africa
 
   elsif record[16] == 'n'
@@ -397,7 +406,7 @@ def load_data file_path
 
   src_data.each {|line|
 
-    votes_records. << (translate_record(line.split ','))
+    votes_records. << (translate_record(line.chomp.split ','))
 
   }
 
@@ -407,26 +416,32 @@ def load_data file_path
 
 end
 
-vote_records = load_data './house-votes-84.data'
+if __FILE__ == $0
 
-apri = Apriori.new vote_records, 1
+  vote_records = load_data './house-votes-84.data'
 
-fre_set = apri.generate_frequent_itemsets
+  apri = Apriori.new vote_records, 100
 
-for layer in fre_set
+  fre_set = apri.generate_frequent_itemsets
 
-  layer.each_pair{|k, v|
+  for ele in fre_set
+    puts ele.size
+  end
 
-    print '{'
-    k.each {|ele| print ele}
-    print '}'
-
-    print ':',v, ' '
-
-  }
-
-  puts
-end
+  # for layer in fre_set
+  #
+  #   layer.each_pair{|k, v|
+  #
+  #     print '{'
+  #     k.each {|ele| print "\"#{ele}\""}
+  #     print '}'
+  #
+  #     print ':',v, ' '
+  #
+  #   }
+  #
+  #   puts
+  # end
 
 # result = apri.find_frequent_1_itemsets
 #
@@ -443,3 +458,5 @@ end
 #   puts
 #
 # }
+
+end
