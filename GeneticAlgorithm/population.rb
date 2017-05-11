@@ -91,9 +91,9 @@ set_mutate_func = Proc.new {|individual|
 
   1.upto(10) {
 
-    gened = individual + prng.rand(-20.0..20.0)
+    gened = individual + prng.rand(-200000.0..200000.0)
 
-    if 1.0 <= gened and gened <= 20.0
+    if 1.0 <= gened and gened <= 200000.0
 
       probability << gened
 
@@ -109,9 +109,9 @@ first_gen = []
 
 prng = Random.new
 
-1.upto(100) {first_gen << prng.rand(1.0..200000.0)}
+1.upto(1000) {first_gen << prng.rand(1.0..200000.0)}
 
-pop = Population.new first_gen, 100, lambda {|x| x * Math.cos(x) + 2}, set_mutate_func
+pop = Population.new first_gen, 1000, lambda {|x| x * Math.cos(x) + 2}, set_mutate_func
 
 final_pop, iteration_count = pop.fit
 
