@@ -3,7 +3,7 @@ __author__ = 'CFWLoader'
 
 class DTNode
 
-  def initialize class_tag, data_partition
+  def initialize data_partition, class_tag = nil
 
     @class_tag = class_tag
 
@@ -13,18 +13,24 @@ class DTNode
 
   end
 
+  def add_child_node child_node
+
+    @child_nodes << child_node
+
+  end
+
 end
 
 
 class DecisionTree
 
-  def initialize dataset, attr_list = nil
+  def initialize dataset, class_tag_name, attr_list = nil
 
     @dataset = dataset
 
     if attr_list.nil?
 
-      @attr_list = gen_attr_list dataset
+      @attr_list = gen_attr_list dataset, class_tag_name
 
     else
 
@@ -32,9 +38,11 @@ class DecisionTree
 
     end
 
+    @root = DTNode.new dataset
+
   end
 
-  def gen_attr_list dataset
+  def gen_attr_list dataset, class_tag_name
 
     attr_list = Set.new
 
@@ -42,9 +50,9 @@ class DecisionTree
 
       record.each_key { |key|
 
-        unless attr_list.include? key
+        unless key == class_tag_name or attr_list.include? key
 
-          attr_list.add key
+          attr_list << key
 
         end
       }
@@ -52,6 +60,38 @@ class DecisionTree
     }
 
     attr_list
+
+  end
+
+  def same_class? data_partition, class_tag_name
+
+    class_val = data_partition[0][class_tag_name]
+
+    data_partition.each { |record| if record[class_tag_name] != class_val then return false end }
+
+    true
+
+  end
+
+  def fit
+
+  end
+
+  def gen_decision_tree data_partition, class_tag_name
+
+    if data_partition.size < 1
+      return nil
+    end
+
+    if same_class? data_partition, class_tag_name
+
+      return DTNode.new data_partition, data_partition[0][class_tag_name]
+
+    end
+
+    if @attr_list.empty?
+      
+    end
 
   end
 
@@ -83,10 +123,6 @@ def load_employee_data path
   src_data.close
 
   data_collection
-
-end
-
-def generate_decision_tree(data_coll)
 
 end
 
