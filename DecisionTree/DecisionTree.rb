@@ -73,6 +73,43 @@ class DecisionTree
 
   end
 
+  def majority_class_value data_partition, class_tag_name
+
+    class_statistic = {}
+
+    data_partition.each { |record|
+
+      if class_statistic.include? record[class_tag_name]
+
+        class_statistic[record[class_tag_name]] += 1
+
+      else
+
+        class_statistic[record[class_tag_name]] = 1
+
+      end
+
+    }
+
+    max_count = 0
+
+    mark_class_value = nil
+
+    class_statistic.each_pair{|k, v|
+
+      if v > max_count
+
+        max_count = v
+
+        mark_class_value = k
+
+      end
+    }
+
+    mark_class_value
+
+  end
+
   def fit
 
   end
@@ -90,7 +127,9 @@ class DecisionTree
     end
 
     if @attr_list.empty?
-      
+
+      return DTNode.new data_partition, majority_class_value(data_partition, class_tag_name)
+
     end
 
   end
@@ -106,7 +145,7 @@ def load_employee_data path
 
   src_data.each { |line|
 
-    record = line.split(',')
+    record = line.chomp.split(',')
 
     trans_rec = {}
 
@@ -133,9 +172,11 @@ if __FILE__ == $0
 
   data_collection.each { |record|
 
+    #puts record.inspect
+
     record.each_pair { |key, val|
 
-      print("(#{key}, #{val})")
+      print "(#{key}, #{val})"
 
     }
 
