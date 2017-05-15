@@ -77,7 +77,7 @@ class Population
 
     }
 
-    fit_count >= (0.7 * @pop_size).to_i
+    fit_count >= (0.1 * @pop_size).to_i
 
   end
 
@@ -105,15 +105,26 @@ set_mutate_func = Proc.new {|individual|
 
 }
 
+score_fun = Proc.new {|x| x * Math.cos(x) + 2}
+
 first_gen = []
 
 prng = Random.new
 
-1.upto(1000) {first_gen << prng.rand(1.0..200000.0)}
+1.upto(10000) {first_gen << prng.rand(-200000.0..200000.0)}
 
-pop = Population.new first_gen, 1000, lambda {|x| x * Math.cos(x) + 2}, set_mutate_func
+pop = Population.new first_gen, 10000, score_fun, set_mutate_func
+
+puts 'Start evolving.'
 
 final_pop, iteration_count = pop.fit
 
-puts final_pop
+# puts final_pop
+
 puts iteration_count
+
+1.upto(10) {|idx|
+
+  print "Individual: #{final_pop[idx]}, Score: #{score_fun.call(final_pop[idx])}.\n"
+
+}

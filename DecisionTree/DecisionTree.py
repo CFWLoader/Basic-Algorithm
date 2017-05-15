@@ -22,7 +22,14 @@ def load_employee_data(path):
 
         data_collection.append(trans_rec)
 
+    src_data.close()
+
     return data_collection
+
+
+def generate_decision_tree(data_coll):
+
+    pass
 
 
 if __name__ == '__main__':
