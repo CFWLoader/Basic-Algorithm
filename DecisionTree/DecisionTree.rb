@@ -12,13 +12,13 @@ class DTNode
 
     @data_partition = data_partition
 
-    @child_nodes = []
+    @child_nodes = {}
 
   end
 
-  def add_child_node child_node
+  def add_child_node trait_value, child_node
 
-    @child_nodes << child_node
+    @child_nodes[trait_value] = child_node
 
   end
 
@@ -179,23 +179,27 @@ class DecisionTree
 
       attr_data_entropy += val[0] / total_count.to_f * entropy(val[1..(val.size - 1)])
 
+      val.delete_at 0
+
     }
 
-    attr_data_entropy
+    return attr_data_entropy, attr_hash
 
   end
 
-  def max_entropy_gain_attr data_paritition
+  def max_entropy_gain_attr data_partition, attr_list
 
-    ori_entropy = entropy nil, data_paritition
+    ori_entropy = entropy nil, data_partition
 
     max_entropy_gain = 0
 
     attr_val = nil
 
-    @attr_list.each {|attr|
+    attr_val_partition = nil
 
-      tmp_entropy_gain = ori_entropy - entropy(attr, data_paritition)
+    attr_list.each {|attr|
+
+      tmp_entropy_gain, tmp_attr_val_partition = ori_entropy - entropy(data_partition, attr)
 
       if max_entropy_gain < tmp_entropy_gain
 
@@ -203,15 +207,19 @@ class DecisionTree
 
         attr_val = attr
 
+        attr_val_partition = tmp_attr_val_partition
+
       end
 
     }
 
-    attr_val
+    return attr_val, attr_val_partition
 
   end
 
-  def gen_decision_tree data_partition
+  def gen_decision_tree current_node, attr_list
+
+    data_partition = current_node.data_partition
 
     if data_partition.size < 1
       return nil
@@ -219,7 +227,7 @@ class DecisionTree
 
     if same_class? data_partition
 
-      return DTNode.new data_partition, data_partition[0][class_tag_name]
+      return DTNode.new data_partition, data_partition[0][@class_tag_name]
 
     end
 
@@ -229,7 +237,27 @@ class DecisionTree
 
     end
 
-    pri_attr = max_entropy_gain_attr data_partition
+    pri_attr, partitions_under_attr = max_entropy_gain_attr data_partition, attr_list
+
+    partitions_under_attr.each_pair {|key, val|
+
+      new_child = nil
+
+      if val.size < 1
+
+        new_child = DTNode.new val, majority_class_value(data_partition)
+
+      else
+
+        new_attr_list= attr_list.clone
+
+        new_attr_list.delete_if {|ele| ele == key}
+
+        new_child = gen_decision_tree val, new_attr_list
+
+      end
+
+    }
 
   end
 
@@ -300,9 +328,13 @@ if __FILE__ == $0
 
   all_entropy = dtree.entropy test_dc
 
-  age_entropy = dtree.entropy test_dc, 'attr2'
+  age_entropy, data_partitions = dtree.entropy test_dc, 'attr2'
 
   puts all_entropy - age_entropy
+
+  data_partitions.each {|element|
+    puts element.inspect
+  }
 
   # data_collection = load_employee_data('./employees.data')
   #
