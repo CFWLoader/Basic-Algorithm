@@ -6,19 +6,71 @@ require 'set'
 
 class DTNode
 
-  def initialize data_partition, class_tag = nil
+  def initialize data_partition = nil, class_tag = nil, attr_tag_name = nil
 
     @class_tag = class_tag
 
     @data_partition = data_partition
 
+    @attr_tag_name = attr_tag_name
+
     @child_nodes = {}
+
+  end
+
+  def data_partition= val
+
+    @data_partition = val
+
+  end
+
+  def data_partition
+
+    @data_partition
+
+  end
+
+  def class_tag= val
+
+    @class_tag = val
+
+  end
+
+  def class_tag
+
+    @class_tag
+
+  end
+
+  def attr_tag_name= val
+
+    @attr_tag_name = val
+
+  end
+
+  def attr_tag_name
+
+    @attr_tag_name
 
   end
 
   def add_child_node trait_value, child_node
 
     @child_nodes[trait_value] = child_node
+
+  end
+
+  def get_child_node_by_attr_val attr_val
+
+    if @child_nodes.has_key? attr_val
+
+      @child_nodes[attr_val]
+
+    else
+
+      nil
+
+    end
 
   end
 
@@ -189,7 +241,7 @@ class DecisionTree
 
   def max_entropy_gain_attr data_partition, attr_list
 
-    ori_entropy = entropy nil, data_partition
+    ori_entropy = entropy data_partition
 
     max_entropy_gain = 0
 
@@ -199,7 +251,9 @@ class DecisionTree
 
     attr_list.each {|attr|
 
-      tmp_entropy_gain, tmp_attr_val_partition = ori_entropy - entropy(data_partition, attr)
+      tmp_entropy_gain, tmp_attr_val_partition = entropy(data_partition, attr)
+
+      tmp_entropy_gain = ori_entropy - tmp_entropy_gain
 
       if max_entropy_gain < tmp_entropy_gain
 
@@ -217,13 +271,7 @@ class DecisionTree
 
   end
 
-  def gen_decision_tree current_node, attr_list
-
-    data_partition = current_node.data_partition
-
-    if data_partition.size < 1
-      return nil
-    end
+  def gen_decision_tree data_partition, attr_list
 
     if same_class? data_partition
 
@@ -237,11 +285,13 @@ class DecisionTree
 
     end
 
+    ret_node = DTNode.new data_partition
+
     pri_attr, partitions_under_attr = max_entropy_gain_attr data_partition, attr_list
 
-    partitions_under_attr.each_pair {|key, val|
+    ret_node.attr_tag_name= pri_attr
 
-      new_child = nil
+    partitions_under_attr.each_pair {|key, val|
 
       if val.size < 1
 
@@ -257,7 +307,37 @@ class DecisionTree
 
       end
 
+      ret_node.add_child_node key, new_child
+
     }
+
+    ret_node
+
+  end
+
+  def fit
+
+    @root = gen_decision_tree @dataset, @attr_list
+
+  end
+
+  def classify record
+
+    iter = @root
+
+    while iter.class_tag.nil?
+
+      iter = iter.get_child_node_by_attr_val record[iter.attr_tag_name]
+
+      if iter.nil?
+
+        return 'Failed to classify the record.'
+
+      end
+
+    end
+
+    iter.class_tag
 
   end
 
@@ -320,7 +400,7 @@ def load_test_data path
 end
 
 
-if __FILE__ == $0
+def test_cast1
 
   test_dc = load_test_data './test.data'
 
@@ -336,20 +416,73 @@ if __FILE__ == $0
     puts element.inspect
   }
 
-  # data_collection = load_employee_data('./employees.data')
-  #
-  # data_collection.each { |record|
-  #
-  #   #puts record.inspect
-  #
-  #   record.each_pair { |key, val|
-  #
-  #     print "(#{key}, #{val})"
-  #
-  #   }
-  #
-  #   puts
-  #
-  # }
+end
+
+
+def test_case2
+
+  data_collection = load_employee_data('./employees.data')
+
+  data_collection.each { |record|
+
+    #puts record.inspect
+
+    record.each_pair { |key, val|
+
+      print "(#{key}, #{val})"
+
+    }
+
+    puts
+
+  }
+
+end
+
+
+def test_case3
+
+  data_collection = load_employee_data('./employees.data')
+
+  dtree = DecisionTree.new data_collection, 'status'
+
+  dtree.fit
+
+  correct_count = 0
+
+  data_collection.each {|record|
+
+    if record['status'] == dtree.classify(record)
+
+      correct_count += 1
+
+    end
+
+  }
+
+  puts "Correctness Ratio: #{100 * correct_count/data_collection.size.to_f}%."
+
+end
+
+def test_case4
+
+  data_collection = load_employee_data('./employees.data')
+
+  dtree = DecisionTree.new data_collection, 'status'
+
+  dtree.fit
+
+  test_record = {'department' => 'systems', 'age' => '26-30', 'salary' => '46000-50000'}
+
+  result = dtree.classify test_record
+
+  puts result
+
+end
+
+
+if __FILE__ == $0
+
+  test_case4
 
 end
