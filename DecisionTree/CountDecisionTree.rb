@@ -239,7 +239,7 @@ class CountDecisionTree
 
       attr_data_entropy += val[0] / total_count.to_f * entropy(val[1..(val.size - 1)])
 
-      puts "Attribute '#{key}' scores: #{attr_data_entropy}."
+      # puts "Attribute '#{key}' scores: #{attr_data_entropy}."
 
       val.delete_at 0
 
@@ -474,6 +474,7 @@ def test_case3
 
 end
 
+
 def test_case4
 
   data_collection = load_employee_data('./employees.data')
@@ -491,8 +492,37 @@ def test_case4
 end
 
 
+def test_case5
+
+  data_collection = load_employee_data('./employees.data')
+
+  correct_count = 0
+
+  0.upto (data_collection.size - 1) { |idx|
+
+    k1_fold = data_collection.clone
+
+    k1_fold.delete_at idx
+
+    cdt = CountDecisionTree.new k1_fold, 'status'
+
+    cdt.fit
+
+    if data_collection[idx]['status'] == cdt.classify(data_collection[idx])
+
+      correct_count += 1
+
+    end
+
+  }
+
+  printf "%.2f%", 100 * correct_count/data_collection.size.to_f
+
+end
+
+
 if __FILE__ == $0
 
-  test_case4
+  test_case5
 
 end

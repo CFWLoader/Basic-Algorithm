@@ -464,6 +464,7 @@ def test_case3
 
 end
 
+
 def test_case4
 
   data_collection = load_employee_data('./employees.data')
@@ -481,8 +482,39 @@ def test_case4
 end
 
 
+def test_case5
+
+  data_collection = load_employee_data('./employees.data')
+
+  correct_count = 0
+
+  attr_list = ['deparment', 'age', 'salary']
+
+  0.upto (data_collection.size - 1) { |idx|
+
+    k1_fold = data_collection.clone
+
+    k1_fold.delete_at idx
+
+    cdt = DecisionTree.new k1_fold, 'status', attr_list
+
+    cdt.fit
+
+    if data_collection[idx]['status'] == cdt.classify(data_collection[idx])
+
+      correct_count += 1
+
+    end
+
+  }
+
+  printf "%.2f%", 100 * correct_count/data_collection.size.to_f
+
+end
+
+
 if __FILE__ == $0
 
-  test_case4
+  test_case5
 
 end
