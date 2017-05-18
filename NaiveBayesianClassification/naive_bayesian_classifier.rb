@@ -2,59 +2,95 @@ require 'matrix'
 
 class NaiveBayesianClassifier
 
-  def check_y y
+  def map_val_to_int vec
 
-    @y_stt_hash = {}
+    v_map_i = {}
 
-    y.each {|ele|
+    v_idx = 0
 
-      if @y_stt_hash.key? ele
+    0.upto(vec.size - 1) {|idx|
 
-        @y_stt_hash[ele] += 1
+      unless v_map_i.include? vec[idx]
 
-      else
+        v_map_i[vec[idx]] = v_idx
 
-        @y_stt_hash[ele] = 1
+        v_idx += 1
 
       end
 
     }
 
+    v_map_i
+
+  end
+
+  def check_y y
+
+    @y_map = map_val_to_int y
+
+    @y_stt = Array.new @y_map.size, 0
+
+    y.each {|ele|
+
+      @y_stt[@y_map[ele]] += 1
+
+    }
+
     total_size = y.size
 
-    @y_prob_hash = {}
+    @y_prob = @y_map.size, 0
 
-    @y_stt_hash.each_pair {|k, v|
+    @y_stt.each_with_index {|val, idx|
 
-      @y_prob_hash[k] = v / total_size.to_f
+      @y_prob[idx] = val / total_size.to_f
 
     }
 
   end
 
-  def check_x x
+  def check_x x, y
 
-    @x_stt_tbls = []
+    @x_map_tbls = Array.new x.column_count
+
+    @x_stt_tbls = Array.new x.column_count
+
+    @x_prob_tbls = Array.new x.column_count
 
     0.upto(x.column_count - 1) {|cidx|
 
-      @y_stt_hash.each_key {|key|
+      x_map = map_val_to_int x.column(cidx)
 
-        xj_stt_tbl = {}
+      @x_map_tbls[cidx] = x_map
 
-        x.column(j) {|xj_key|
+      x_stt_tbl = Matrix.build(@y_map.size, x_map.size) {0}
 
-          tpl = (xj_key, key)
+      0.upto(x.row_count - 1) {|ridx|
 
-          if xj_stt_tbl.has_key? tpl
+        y[ridx]
 
-            xj_stt_tbl[tpl]
+        y_idx = @y_map[y[ridx]]
 
-          end
+        x_map_val = x[ridx, cidx]
 
-        }
+        x_idx = x_map[x_map_val]
+
+        x_stt_tbl[y_idx, x_idx] += 1
+
+        # x_stt_tbl[@y_map[y[ridx]]][x_map[x[ridx][cidx]]] += 1
 
       }
+
+      @x_stt_tbls[cidx] = x_stt_tbl
+
+      x_prob_tbl = Matrix.build(@y_map.size, x_map.size) {0}
+
+      x_stt_tbl.each_with_index {|e, row, col|
+
+        x_prob_tbl[row][col] = e/@y_stt[row].to_f
+
+      }
+
+      @x_prob_tbls[cidx] = x_prob_tbl
 
     }
 
@@ -64,7 +100,13 @@ class NaiveBayesianClassifier
 
     check_y y
 
-    check_x x
+    check_x x, y
+
+  end
+
+  def show_y
+
+    puts @y_prob.inspect
 
   end
 
@@ -114,5 +156,7 @@ if __FILE__ == $0
   classifier = NaiveBayesianClassifier.new
 
   classifier.fit train, target
+
+  classifier.show_y
 
 end
