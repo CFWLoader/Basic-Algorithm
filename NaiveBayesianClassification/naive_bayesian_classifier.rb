@@ -66,7 +66,7 @@ class NaiveBayesianClassifier
 
     total_size = y.size
 
-    @y_prob = @y_map.size, 0
+    @y_prob = Array.new @y_map.size, 0
 
     @y_stt.each_with_index { |val, idx|
 
@@ -82,8 +82,6 @@ class NaiveBayesianClassifier
 
     column_size = x[0].size
 
-    # @x_map_tbls = Array.new column_size
-
     build_x_map_tbls x
 
     @x_stt_tbls = Array.new column_size
@@ -92,9 +90,6 @@ class NaiveBayesianClassifier
 
     0.upto(column_size - 1) { |cidx|
 
-      # x_map = map_val_to_int x[0].size
-      #
-      # @x_map_tbls[cidx] = x_map
       x_map = @x_map_tbls[cidx]
 
       x_stt_tbl = Array.new(@y_map.size)
@@ -102,14 +97,6 @@ class NaiveBayesianClassifier
       x_stt_tbl.each_index {|idx| x_stt_tbl[idx] = Array.new(x_map.size, 0)}
 
       0.upto(row_size - 1) { |ridx|
-
-        # y_idx = @y_map[y[ridx]]
-        #
-        # x_map_val = x[ridx][cidx]
-        #
-        # x_idx = x_map[x_map_val]
-        #
-        # x_stt_tbl[y_idx][x_idx] += 1
 
         x_stt_tbl[@y_map[y[ridx]]][x_map[x[ridx][cidx]]] += 1
 
@@ -185,6 +172,58 @@ class NaiveBayesianClassifier
 
   def predict rec
 
+    cls_idx = nil
+
+    max_prob_val = 0
+
+    @y_prob.each_with_index {|y_val, y_idx|
+
+      cls_var = y_val
+
+      @x_prob_tbls.each_with_index {|tbl, tbl_idx|
+
+        x_idx = @x_map_tbls[tbl_idx][rec[tbl_idx]]
+
+        if x_idx.nil?
+
+          cls_var = 0
+
+        else
+
+          cls_var *= tbl[y_idx][x_idx]
+
+        end
+
+        # cls_var *= tbl[y_idx][@x_map_tbls[tbl_idx][rec[tbl_idx]]]
+
+      }
+
+      if max_prob_val < cls_var
+
+        max_prob_val = cls_var
+
+        cls_idx = y_idx
+
+      end
+
+    }
+
+    if cls_idx.nil?
+
+      return 'Failed to predict this record.'
+
+    end
+
+    @y_map.each_pair {|key, val|
+
+      if val == cls_idx
+
+        return key
+
+      end
+
+    }
+
   end
 
 end
@@ -222,7 +261,7 @@ def load_employee_data path
 end
 
 
-if __FILE__ == $0
+def test_case1
 
   train, target = load_employee_data './employees.data'
 
@@ -230,8 +269,97 @@ if __FILE__ == $0
 
   classifier.fit train, target
 
-  classifier.show_y
+  # classifier.show_y
+  #
+  # classifier.show_x_ana_data
 
-  classifier.show_x_ana_data
+  right_count = 0
+
+  target.each_with_index {|val, idx|
+
+    if val == classifier.predict(train[idx])
+
+      right_count += 1
+
+    end
+
+  }
+
+  puts "Correctness Ratio: #{right_count / train.size.to_f}"
+
+end
+
+
+def test_case2
+
+  train, target = load_employee_data './employees.data'
+
+  classifier = NaiveBayesianClassifier.new
+
+  # classifier.show_y
+  #
+  # classifier.show_x_ana_data
+
+  right_count = 0
+
+  target.each_with_index {|val, idx|
+
+    k_fold_train = train.clone
+
+    k_fold_train.delete_at idx
+
+    k_fold_target = target.clone
+
+    k_fold_target.delete_at idx
+
+    classifier.fit k_fold_train, k_fold_target
+
+    if val == classifier.predict(train[idx])
+
+      right_count += 1
+
+    end
+
+  }
+
+  puts "Correctness Ratio: #{right_count / train.size.to_f}"
+
+end
+
+
+def test_case3
+
+  train, target = load_employee_data './employees.data'
+
+  classifier = NaiveBayesianClassifier.new
+
+  classifier.fit train, target
+
+  # classifier.show_y
+  #
+  # classifier.show_x_ana_data
+
+  right_count = 0
+
+  target.each_with_index {|val, idx|
+
+    if val == classifier.predict(train[idx])
+
+      right_count += 1
+
+    end
+
+  }
+
+  puts "Correctness Ratio: #{right_count / train.size.to_f}"
+
+  puts "#{classifier.predict ['systems', '26-30', '46000-50000']}"
+
+end
+
+
+if __FILE__ == $0
+
+  test_case3
 
 end
