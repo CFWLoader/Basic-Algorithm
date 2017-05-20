@@ -32,9 +32,9 @@ module StatisticMath
 
     sqrt_dev_sum = 0
 
-    x.each { |val| sqrt_dev_sum += (val - ave) ** 2 }
+    x.each { |val| sqrt_dev_sum += ((val - ave) ** 2)}
 
-    Math.sqrt(sqrt_dev_sum) / x.size.to_f
+    sqrt_dev_sum / x.size.to_f
 
   end
 
@@ -48,16 +48,31 @@ module StatisticMath
       sqrt_dev_sum += (row[col_idx] - ave) ** 2
     }
 
-    Math.sqrt(sqrt_dev_sum) / x.size.to_f
+    sqrt_dev_sum / x.size.to_f
 
   end
 
   def self.gaussian_value miu, omega, pred_val
 
-    exp_val = Math.exp (-(pred_val - miu) ** 2 / (2 * omega ** 2))
+    exp_val = Math.exp (-((pred_val - miu) ** 2) / (2 * (omega ** 2)))
 
     @@__gaussian_fun_deno__ * exp_val / omega
 
   end
+
+end
+
+
+if $0 == __FILE__
+
+  origin = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  ave = StatisticMath.average origin
+
+  dev = StatisticMath.square_deviation origin
+
+  puts ave, Math.sqrt(dev)
+
+  puts StatisticMath.gaussian_value ave, Math.sqrt(dev), 3
 
 end
