@@ -1,4 +1,6 @@
-class HybridBayesianClassifier
+require './data_opts.rb'
+
+class HybridNaiveBayesianClassifier
 
   def map_val_to_int vec
 
@@ -22,11 +24,17 @@ class HybridBayesianClassifier
 
   end
 
-  def build_x_map_tbls x, discrete_spec
+  def build_x_map_tbls x
 
     @x_map_tbls = Array.new(x[0].size)
 
-    @x_map_tbls.each_index {|idx| @x_map_tbls[idx] = {}}
+    if @discrete_spec.nil?
+
+      raise Exception.new 'discrete_spec is nil!'
+
+    end
+
+    @x_map_tbls.each_index {|idx| if @discrete_spec.include? idx then @x_map_tbls[idx] = {} end}
 
     x.each_with_index { |row, ridx|
 
@@ -34,7 +42,7 @@ class HybridBayesianClassifier
 
         # puts "#{cidx}, #{val}, #{@x_map_tbls[cidx].inspect}"
 
-        unless @x_map_tbls[cidx].include? val
+        unless @x_map_tbls[cidx].nil? or @x_map_tbls[cidx].include? val
 
           max_idx = 0
 
@@ -49,6 +57,14 @@ class HybridBayesianClassifier
       }
 
     }
+
+  end
+
+  def build_discrete_var_probability x, y, col_idx
+
+  end
+
+  def build_continuous_var_probability x, y, col_idx
 
   end
 
@@ -124,7 +140,13 @@ class HybridBayesianClassifier
 
   end
 
-  def fit x, y, discrete_spec
+  def fit x, y, discrete_spec = nil
+
+    @discrete_spec = if discrete_spec.nil? then [] else discrete_spec end
+
+    check_y y
+
+    check_x x, y
 
   end
 
@@ -134,9 +156,42 @@ class HybridBayesianClassifier
 
   end
 
+  def show_x_ana_data
+
+    puts 'X map tables:'
+
+    puts @x_map_tbls
+
+    # puts 'X statistic tables:'
+    #
+    # puts @x_stt_tbls.inspect
+    #
+    # puts 'X probability tables:'
+    #
+    # puts @x_prob_tbls.inspect
+
+  end
+
+end
+
+
+def test_case1
+
+  train_set, target_set = load_employee_regened_data './employees_regened.data'
+
+  hnbc = HybridNaiveBayesianClassifier.new
+
+  hnbc.fit train_set, target_set, [0]
+
+  hnbc.build_x_map_tbls train_set
+
+  hnbc.show_x_ana_data
+
 end
 
 
 if $0 == __FILE__
+
+  test_case1
 
 end
