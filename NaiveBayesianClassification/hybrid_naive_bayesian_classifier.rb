@@ -324,8 +324,39 @@ def test_case2
 end
 
 
+def test_case3
+
+  ori_train, ori_target = load_abalone_data './abalone/abalone.data'
+
+  train_tar_sep_line = 3133
+
+  hnbc = HybridNaiveBayesianClassifier.new
+
+  #hnbc.fit ori_train[0..(train_tar_sep_line - 1)], ori_target[0..(train_tar_sep_line - 1)], [0]
+
+  hnbc.fit ori_train, ori_target, [0]
+
+  data_size = ori_target.size
+
+  right_count = 0
+
+  train_tar_sep_line.upto(data_size - 1) {|idx|
+
+    if hnbc.predict(ori_train[idx]) == ori_target[idx]
+
+      right_count += 1
+
+    end
+
+  }
+
+  puts "Total:#{data_size - train_tar_sep_line + 1}, Right:#{right_count}, Correctness Ratio:#{right_count / (data_size - train_tar_sep_line + 1).to_f}."
+
+end
+
+
 if $0 == __FILE__
 
-  test_case2
+  test_case3
 
 end

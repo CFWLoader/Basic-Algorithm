@@ -88,6 +88,31 @@ def load_employee_regened_data path
 end
 
 
+def load_abalone_data path
+
+  src_data = open path, 'r'
+
+  train_collection = []
+
+  target_collection = []
+
+  src_data.each { |line|
+
+    record = line.chomp.split(',')
+
+    train_collection << [record[0], record[1].to_f, record[2].to_f, record[3].to_f, record[4].to_f, record[5].to_f, record[6].to_f, record[7].to_f]
+
+    target_collection << record[8]
+
+  }
+
+  src_data.close
+
+  return train_collection, target_collection
+
+end
+
+
 if $0 == __FILE__
 
   regenerate_employee_data './employees.data'
