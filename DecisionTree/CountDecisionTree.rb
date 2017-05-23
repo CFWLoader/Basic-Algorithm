@@ -542,7 +542,10 @@ def test_case6
 
   cdt.fit
 
-  Graphviz_DT_API.print_dt cdt.root, 1
+  Graphviz_DT_API.print_dt cdt.root
+
+  #Graphviz_DT_API.print_dt cdt.root, 1
+  Graphviz_DT_API.gen_graph cdt.root, './cdt.dot'
 
 end
 

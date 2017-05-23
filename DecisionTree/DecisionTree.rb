@@ -386,6 +386,34 @@ def load_employee_data path
 end
 
 
+def load_employee_regened_data path
+
+  src_data = open path, 'r'
+
+  train_collection = []
+
+  src_data.each { |line|
+
+    record = line.chomp.split(',')
+
+    trans_rec = {}
+
+    trans_rec['department'] = record[0]
+    trans_rec['age'] = record[1]
+    trans_rec['salary'] = record[2]
+    trans_rec['status'] = record[3]
+
+    train_collection << trans_rec
+
+  }
+
+  src_data.close
+
+  train_collection
+
+end
+
+
 def load_test_data path
 
   src_data = open path, 'r'
@@ -534,7 +562,20 @@ def test_case6
 
   dt.fit
 
-  Graphviz_DT_API.print_dt dt.root, 1
+  Graphviz_DT_API.gen_graph dt.root, 'dt.dot'
+
+end
+
+
+def test_case7
+
+  data_collection = load_employee_regened_data('./employees_regened.data')
+
+  dt = DecisionTree.new  data_collection, 'status'
+
+  dt.fit
+
+  Graphviz_DT_API.gen_graph dt.root, 'dt.dot'
 
 end
 
