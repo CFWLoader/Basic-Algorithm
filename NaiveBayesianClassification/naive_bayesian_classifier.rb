@@ -261,6 +261,44 @@ def load_employee_data path
 end
 
 
+def load_employee_data_with_count path
+
+  src_data = open path, 'r'
+
+  train_collection = []
+
+  target_collection = []
+
+  src_data.each { |line|
+
+    record = line.chomp.split(',')
+
+    # trans_rec = []
+    # trans_rec['department'] = record[0]
+    # trans_rec['status'] = record[1]
+    # trans_rec['age'] = record[2]
+    # trans_rec['salary'] = record[3]
+    # trans_rec['count'] = record[4]
+
+    count = record[4].to_i
+
+    1.upto(count){
+
+      train_collection << [record[0], record[2], record[3]]
+
+      target_collection << record[1]
+
+    }
+
+  }
+
+  src_data.close
+
+  return train_collection, target_collection
+
+end
+
+
 def test_case1
 
   train, target = load_employee_data './employees.data'
@@ -358,8 +396,76 @@ def test_case3
 end
 
 
+def test_case4
+
+  train, target = load_employee_data_with_count './employees.data'
+
+  classifier = NaiveBayesianClassifier.new
+
+  classifier.fit train, target
+
+  # classifier.show_y
+  #
+  # classifier.show_x_ana_data
+
+  right_count = 0
+
+  target.each_with_index {|val, idx|
+
+    if val == classifier.predict(train[idx])
+
+      right_count += 1
+
+    end
+
+  }
+
+  puts "Correctness Ratio: #{right_count / train.size.to_f}"
+
+  puts "#{classifier.predict ['systems', '26-30', '46000-50000']}"
+
+end
+
+
+def test_case5
+
+  train, target = load_employee_data_with_count './employees.data'
+
+  classifier = NaiveBayesianClassifier.new
+
+  # classifier.show_y
+  #
+  # classifier.show_x_ana_data
+
+  right_count = 0
+
+  target.each_with_index {|val, idx|
+
+    k_fold_train = train.clone
+
+    k_fold_train.delete_at idx
+
+    k_fold_target = target.clone
+
+    k_fold_target.delete_at idx
+
+    classifier.fit k_fold_train, k_fold_target
+
+    if val == classifier.predict(train[idx])
+
+      right_count += 1
+
+    end
+
+  }
+
+  puts "Correctness Ratio: #{right_count / train.size.to_f}"
+
+end
+
+
 if __FILE__ == $0
 
-  test_case3
+  test_case5
 
 end
