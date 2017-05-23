@@ -54,6 +54,12 @@ class DTNode
 
   end
 
+  def child_nodes
+
+    @child_nodes
+
+  end
+
   def add_child_node trait_value, child_node
 
     @child_nodes[trait_value] = child_node
@@ -341,6 +347,12 @@ class DecisionTree
 
   end
 
+  def root
+
+    @root
+
+  end
+
 end
 
 
@@ -396,6 +408,33 @@ def load_test_data path
   src_data.close
 
   data_collection
+
+end
+
+
+$NODE_NUMBERING = 1
+
+def print_dt node, layer = 0, parent_num = 0, **oth_para
+
+  cur_num = $NODE_NUMBERING
+
+  if node.class_tag.nil?
+
+    print "(#{cur_num}, #{node.attr_tag_name}, #{node.child_nodes.keys.inspect}, #{parent_num}, #{oth_para[:node_val]})\n"
+
+  else
+
+    print "(#{cur_num}, #{node.class_tag}, #{parent_num}, #{oth_para[:node_val]})\n"
+
+  end
+
+  $NODE_NUMBERING += 1
+
+  node.child_nodes.each_pair {|key, val|
+
+    print_dt val, layer + 1, cur_num, :node_val => key
+
+  }
 
 end
 
@@ -513,8 +552,21 @@ def test_case5
 end
 
 
+def test_case6
+
+  data_collection = load_employee_data('./employees.data')
+
+  dt = DecisionTree.new  data_collection, 'status'
+
+  dt.fit
+
+  print_dt dt.root, 1
+
+end
+
+
 if __FILE__ == $0
 
-  test_case5
+  test_case6
 
 end
