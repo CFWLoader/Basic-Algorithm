@@ -2,6 +2,7 @@ __author__ = 'CFWLoader'
 
 
 require 'set'
+require './graphviz_dt_api.rb'
 
 
 class DTNode
@@ -412,33 +413,6 @@ def load_test_data path
 end
 
 
-$NODE_NUMBERING = 1
-
-def print_dt node, layer = 0, parent_num = 0, **oth_para
-
-  cur_num = $NODE_NUMBERING
-
-  if node.class_tag.nil?
-
-    print "(#{cur_num}, #{node.attr_tag_name}, #{node.child_nodes.keys.inspect}, #{parent_num}, #{oth_para[:node_val]})\n"
-
-  else
-
-    print "(#{cur_num}, #{node.class_tag}, #{parent_num}, #{oth_para[:node_val]})\n"
-
-  end
-
-  $NODE_NUMBERING += 1
-
-  node.child_nodes.each_pair {|key, val|
-
-    print_dt val, layer + 1, cur_num, :node_val => key
-
-  }
-
-end
-
-
 def test_cast1
 
   test_dc = load_test_data './test.data'
@@ -560,7 +534,7 @@ def test_case6
 
   dt.fit
 
-  print_dt dt.root, 1
+  Graphviz_DT_API.print_dt dt.root, 1
 
 end
 
