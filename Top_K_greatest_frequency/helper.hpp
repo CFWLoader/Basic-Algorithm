@@ -9,6 +9,8 @@
 #include <fstream>
 #include <random>
 
+#include <iostream>
+
 int generate_random_integers(std::string filePath, uint64_t data_to_gen)
 {
     std::ofstream outFile(filePath);
@@ -17,7 +19,7 @@ int generate_random_integers(std::string filePath, uint64_t data_to_gen)
 
     std::mt19937_64 seed(rd());
 
-    std::uniform_int_distribution<unsigned long long> rand_engine;
+    std::uniform_int_distribution<uint> rand_engine;
 
     for(uint64_t i = 0; i < data_to_gen; ++i)
     {
@@ -29,13 +31,21 @@ int generate_random_integers(std::string filePath, uint64_t data_to_gen)
     return 0;
 }
 
-int read_number_data(string filePath)
+int read_number_data(std::string filePath)
 {
     std::ifstream input(filePath);
 
+    std::string buf;
+
+    unsigned int number;
+
     while(!input.eof())
     {
+        input >> buf;
 
+        number = strtol(buf.c_str(), NULL, 10);
+
+        std::cout << number << std::endl;
     }
 
     input.close();
