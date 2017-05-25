@@ -113,3 +113,8 @@ int TopK_Ranker::updateHeap(uint value)
 
     return 0;
 }
+
+std::map<uint, uint> TopK_Ranker::topKFrequentestNumbers()
+{
+    return std::map<uint, uint>();
+}

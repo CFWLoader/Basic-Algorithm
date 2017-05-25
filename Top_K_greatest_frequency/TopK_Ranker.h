@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <map>
 
 class TopK_Ranker {
 
@@ -20,6 +21,8 @@ public:
     ~TopK_Ranker();
 
     std::vector<uint> topKMaximumNumbers();
+
+    std::map<uint, uint> topKFrequentestNumbers();
 
 private:
 
