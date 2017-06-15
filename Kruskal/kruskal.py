@@ -61,10 +61,14 @@ class Graph:
 
             ret_vertexes.append(vertex)
 
+        if len(ret_vertexes) != len(self.nodes) - 1:
+
+            print('Failed!')
+
         return ret_vertexes
 
 
-if __name__ == '__main__':
+def testcase1():
 
     graph = Graph()
 
@@ -94,3 +98,42 @@ if __name__ == '__main__':
 
         print(edge)
 
+
+
+def testcase2():
+
+    graph = Graph()
+
+    graph.add_node(1)
+    graph.add_node(2)
+    graph.add_node(3)
+    graph.add_node(4)
+    graph.add_node(5)
+    graph.add_node(6)
+    graph.add_node(7)
+
+    graph.add_vertex(1, 2, 20)
+    graph.add_vertex(1, 6, 23)
+    graph.add_vertex(1, 7, 1)
+    graph.add_vertex(2, 3, 15)
+    graph.add_vertex(2, 7, 4)
+    graph.add_vertex(3, 7, 9)
+    graph.add_vertex(3, 4, 3)
+    graph.add_vertex(4, 7, 16)
+    graph.add_vertex(4, 5, 17)
+    graph.add_vertex(5, 7, 25)
+    graph.add_vertex(5, 6, 20)
+    graph.add_vertex(6, 7, 16)
+
+    edges = graph.kruskal_minimal_tree()
+
+    for edge in edges:
+
+        print(edge)
+
+
+if __name__ == '__main__':
+
+    testcase1()
+
+    #testcase2()
