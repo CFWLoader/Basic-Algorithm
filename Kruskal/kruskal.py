@@ -1,4 +1,4 @@
-class Vertex:
+class Edge:
 
     def __init__(self, src_node_num, tag_node_num, weight):
 
@@ -19,7 +19,7 @@ class Graph:
 
         self.nodes = set()
 
-        self.vertexes = []
+        self.edges = []
 
     def add_node(self, node_num):
 
@@ -31,41 +31,55 @@ class Graph:
 
             print('Node is existed.')
 
-    def add_vertex(self, src_node_num, tag_node_num, weight):
+    def add_edge(self, src_node_num, tag_node_num, weight):
 
         if src_node_num not in self.nodes or tag_node_num not in self.nodes:
 
             print("Node doesn't exist.")
 
-        self.vertexes.append(Vertex(src_node_num, tag_node_num, weight))
+        self.edges.append(Edge(src_node_num, tag_node_num, weight))
 
     def kruskal_minimal_tree(self):
 
-        visited = set()
+        visited = {}
 
-        ret_vertexes = []
+        ret_edges = []
 
         #sorted(self.vertexes, key = lambda a: a.weight)
 
-        self.vertexes.sort(key=lambda v:v.weight)
+        target_link_numbers = len(self.nodes) - 1
 
-        for vertex in self.vertexes:
+        if len(self.edges) < target_link_numbers:
 
-            if vertex.src_node_num in visited and vertex.tag_node_num in visited:
+            raise Exception('No enough vertexes to construct the tree')
 
-                continue
+        for sym in self.nodes:
 
-            if vertex.src_node_num not in visited: visited.add(vertex.src_node_num)
+            visited[sym] = sym                                                   # Use their own values to mark the set.
 
-            if vertex.tag_node_num not in visited: visited.add(vertex.tag_node_num)
+        self.edges.sort(key= lambda a: a.weight)
 
-            ret_vertexes.append(vertex)
+        edge_idx = 0
 
-        if len(ret_vertexes) != len(self.nodes) - 1:
+        while len(ret_edges) < target_link_numbers:
 
-            print('Failed!')
+            set_mark1 = visited[self.edges[edge_idx].src_node_num]
 
-        return ret_vertexes
+            set_mark2 = visited[self.edges[edge_idx].tag_node_num]
+
+            if set_mark1 != set_mark2:                                          # If they are in different set, means no loop. Add this edge.
+
+                ret_edges.append(self.edges[edge_idx])
+
+                for k, v in visited.items():                                    # Merge them to a set.
+
+                    if v == set_mark2:
+
+                        visited[k] = set_mark1
+
+            edge_idx += 1
+
+        return ret_edges
 
 
 def testcase1():
@@ -80,17 +94,17 @@ def testcase1():
     graph.add_node(6)
     graph.add_node(7)
 
-    graph.add_vertex(1, 2, 7)
-    graph.add_vertex(1, 4, 5)
-    graph.add_vertex(2, 3, 8)
-    graph.add_vertex(2, 4, 9)
-    graph.add_vertex(2, 5, 7)
-    graph.add_vertex(3, 5, 5)
-    graph.add_vertex(4, 5, 15)
-    graph.add_vertex(4, 6, 6)
-    graph.add_vertex(5, 6, 8)
-    graph.add_vertex(5, 7, 9)
-    graph.add_vertex(6, 7, 11)
+    graph.add_edge(1, 2, 7)
+    graph.add_edge(1, 4, 5)
+    graph.add_edge(2, 3, 8)
+    graph.add_edge(2, 4, 9)
+    graph.add_edge(2, 5, 7)
+    graph.add_edge(3, 5, 5)
+    graph.add_edge(4, 5, 15)
+    graph.add_edge(4, 6, 6)
+    graph.add_edge(5, 6, 8)
+    graph.add_edge(5, 7, 9)
+    graph.add_edge(6, 7, 11)
 
     edges = graph.kruskal_minimal_tree()
 
@@ -112,18 +126,18 @@ def testcase2():
     graph.add_node(6)
     graph.add_node(7)
 
-    graph.add_vertex(1, 2, 20)
-    graph.add_vertex(1, 6, 23)
-    graph.add_vertex(1, 7, 1)
-    graph.add_vertex(2, 3, 15)
-    graph.add_vertex(2, 7, 4)
-    graph.add_vertex(3, 7, 9)
-    graph.add_vertex(3, 4, 3)
-    graph.add_vertex(4, 7, 16)
-    graph.add_vertex(4, 5, 17)
-    graph.add_vertex(5, 7, 25)
-    graph.add_vertex(5, 6, 20)
-    graph.add_vertex(6, 7, 16)
+    graph.add_edge(1, 2, 20)
+    graph.add_edge(1, 6, 23)
+    graph.add_edge(1, 7, 1)
+    graph.add_edge(2, 3, 15)
+    graph.add_edge(2, 7, 4)
+    graph.add_edge(3, 7, 9)
+    graph.add_edge(3, 4, 3)
+    graph.add_edge(4, 7, 16)
+    graph.add_edge(4, 5, 17)
+    graph.add_edge(5, 7, 25)
+    graph.add_edge(5, 6, 20)
+    graph.add_edge(6, 7, 16)
 
     edges = graph.kruskal_minimal_tree()
 
@@ -136,4 +150,4 @@ if __name__ == '__main__':
 
     testcase1()
 
-    #testcase2()
+    # testcase2()
