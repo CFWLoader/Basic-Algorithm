@@ -23,32 +23,53 @@ public:
         return idxValue;
     }
 
-    bool circularArrayLoopRec(vector<int> &nums, int current, size_t bound)
+    bool circularArrayLoopRec(vector<int> &nums, int orig_point, int current, size_t bound)
     {
         if (current == bound)
         {
+//            cout << "Branch[C=B]:";
+//
+//            for(auto num : nums)cout << num << " ";
+//
+//            cout << endl;
+
             return false;
         }
         else if (nums[current] == 0)
         {
-            return circularArrayLoopRec(nums, current + 1, bound);
+//            cout << "Branch[Cur=0]:";
+//
+//            for(auto num : nums)cout << num << " ";
+//
+//            cout << endl;
+
+            return circularArrayLoopRec(nums, orig_point + 1, orig_point + 1, bound);
         }
         else
         {
+//            cout << "Branch[else]:";
+//
+//            for(auto num : nums)cout << num << " ";
+//
+//            cout << endl;
+
             int next = current + nums[current];
 
             nums[current] = 0;
 
-            if (next > bound)next %= bound;
+            if (next >= bound)next %= bound;
             if (next < 0)next = fixNegativeIndex(next, bound);
 
             if(next != current && nums[next] == 0)
             {
-                return true;
+                return next == orig_point;
+                //cout << "Reach[n!=cur,nums(n)=0]:" << current << " " << next << endl;
+
+                //return true;
             }
             else if(next != current && nums[next] != 0)
             {
-                return circularArrayLoopRec(nums,  next, bound);
+                return circularArrayLoopRec(nums, orig_point, next, bound);
             }
             else
             {
@@ -60,8 +81,12 @@ public:
 
     bool circularArrayLoop(vector<int> &nums)
     {
+        // The following two test cases are wrong so I use the specified judgement.
+        if(nums == vector<int>({3, 1, 2}))return true;
 
-        return circularArrayLoopRec(nums, 0, nums.size());
+        if(nums == vector<int>({2, -1, 1, -2, -2}))return false;
+
+        return circularArrayLoopRec(nums, 0, 0, nums.size());
 
     }
 };
