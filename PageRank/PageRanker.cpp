@@ -54,8 +54,8 @@ PageRanker::pageRank(
              ++prProcValIter)
         {
             get<1>(*prProcValIter) = get<2>(*prProcValIter);
-            // get<2>(*prProcValIter) = 1.0 - dampingFactor;
-            get<2>(*prProcValIter) = 0;
+            get<2>(*prProcValIter) = 1.0 - dampingFactor;
+            // get<2>(*prProcValIter) = 0;
         }
 
 //        for (vector<vector<unsigned long>>::const_iterator rowIter = graph.begin();
@@ -79,7 +79,7 @@ PageRanker::pageRank(
             {
                 if(graph[rowIdx][colIdx] == 1)
                 {
-                    get<2>(prProcValues[colIdx]) += get<1>(prProcValues[rowIdx]) / get<3>(prProcValues[rowIdx]);
+                    get<2>(prProcValues[colIdx]) += dampingFactor * get<1>(prProcValues[rowIdx]) / get<3>(prProcValues[rowIdx]);
                 }
             }
         }
@@ -89,9 +89,7 @@ PageRanker::pageRank(
     sort(prProcValues.begin(), prProcValues.end(), [](tuple<unsigned long, float, float, size_t> a,
                                                       tuple<unsigned long, float, float, size_t> b)
          {
-             if (get<2>(a) < get<2>(b))return -1;
-             else if (get<2>(a) == get<2>(b))return 0;
-             else return 1;
+             return get<2>(a) > get<2>(b);
          }
     );
 
