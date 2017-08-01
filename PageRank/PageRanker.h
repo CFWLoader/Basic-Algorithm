@@ -7,8 +7,6 @@
 
 #include <vector>
 
-static const float DAMPING_FACTOR = 0.85;
-
 class PageRanker
 {
 public:
@@ -20,8 +18,10 @@ public:
     std::vector<std::pair<unsigned long, float>> pageRank(
             const std::vector<std::vector<unsigned long>>&,
             unsigned long,
-            float,
-            unsigned long);
+            unsigned long,
+            float = 1.0,
+            float = 0.85
+            );
 
 private:
 };
