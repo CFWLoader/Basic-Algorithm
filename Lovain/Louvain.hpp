@@ -177,6 +177,8 @@ map<const Vertex*, set<const Vertex*>> louvain(vector<const Vertex*> graph)
 
     const Vertex* merging1, *merging2 ;
 
+    // std::cout << "Initial partition size: " << partitions.size() << std::endl;
+
     while(max_delta_q > 0)
     {
         max_delta_q = -1.1;
@@ -187,6 +189,11 @@ map<const Vertex*, set<const Vertex*>> louvain(vector<const Vertex*> graph)
         {
             for(auto neighbor : partition.first->neighbors)
             {
+                if(partitions.find(neighbor.first) == partitions.end())
+                {
+                    continue;
+                }
+
                 set<const Vertex*> new_set(partitions[neighbor.first].begin(), partitions[neighbor.first].end());
 
                 delta_q = modularity(new_set, total_weight / 2);
@@ -214,7 +221,7 @@ map<const Vertex*, set<const Vertex*>> louvain(vector<const Vertex*> graph)
                 throw "Bad Logic!";
             }
 
-            std::cout << "Merging: " << merging1->node_num << " and " << merging2->node_num << std::endl;
+            // std::cout << "Merging: " << merging1->node_num << " and " << merging2->node_num << std::endl;
 
             partitions[merging1].insert(partitions[merging2].begin(), partitions[merging2].end());
 
