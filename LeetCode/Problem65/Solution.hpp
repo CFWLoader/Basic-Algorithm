@@ -49,12 +49,16 @@ public:
             return false;
         }
 
-        for (s_idx = 0; s_idx < s.size() and (s[s_idx] == ' ' or s[s_idx] == '-' or s[s_idx] == '+'); ++s_idx);
+        for (s_idx = 0; s_idx < s.size() and s[s_idx] == ' '; ++s_idx);
+
+//        std::cout << s_idx << ":" << s[s_idx] << std::endl;
 
         if (s[s_idx] == 'e')
         {
             return false;
         }
+
+        for(; s_idx < s.size() and (s[s_idx] == '-' or s[s_idx] == '+'); ++s_idx);
 
 //        std::cout << s_idx << std::endl;
 
@@ -65,6 +69,8 @@ public:
         if (s_idx < s.size() and (s[s_idx] == 'e' or s[s_idx] == '.'))
         {
 //            std::cout << "Checking:" << s[s_idx] << std::endl;
+            if(s[s_idx] == '.' and s[s_idx + 1] == 'e') ++s_idx;
+
             for (++s_idx; s_idx < s.size() and s[s_idx] >= '0' and s[s_idx] <= '9'; ++s_idx);
         }
 
