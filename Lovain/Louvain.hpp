@@ -82,7 +82,7 @@ vector<const Vertex *> load_graph(string file_path)
     }
 
 
-    for(size_t idx = 1; num_ver_mapping.find(idx) != num_ver_mapping.end(); ++idx)
+    for (size_t idx = 1; num_ver_mapping.find(idx) != num_ver_mapping.end(); ++idx)
     {
         graph.push_back(num_ver_mapping[idx]);
     }
@@ -92,11 +92,72 @@ vector<const Vertex *> load_graph(string file_path)
     return graph;
 }
 
-bool release_graph(vector<const Vertex *> graph)
+vector<const Vertex *> load_directed_edge_graph(string file_path)
 {
-    for(vector<const Vertex*>::iterator iterator1 = graph.begin();
-        iterator1 != graph.end();
-        ++iterator1)
+    ifstream ifstream1(file_path);
+
+    if(!ifstream1.is_open())
+    {
+        throw "Bad file path!";
+    }
+
+    vector<const Vertex *> graph;
+
+    map<int, Vertex *> num_ver_mapping;
+
+    Vertex *ver_ptr = nullptr;
+
+    string buf;
+
+//    int load_counter = 0;
+
+    while (std::getline(ifstream1, buf))
+    {
+//        std::cout << "Loading:" << load_counter << std::endl;
+
+        istringstream ss(buf);
+        istream_iterator<int> the_begin(ss), the_end;
+
+        vector<int> array_tokens(the_begin, the_end);
+
+        if (num_ver_mapping.find(array_tokens[0]) == num_ver_mapping.end())
+            num_ver_mapping[array_tokens[0]] = new Vertex(array_tokens[0]);
+
+        ver_ptr = num_ver_mapping[array_tokens[0]];
+
+        if (num_ver_mapping.find(array_tokens[1]) == num_ver_mapping.end())
+        {
+            num_ver_mapping[array_tokens[1]] = new Vertex(array_tokens[1]);
+        }
+
+        ver_ptr->add_neighbor(num_ver_mapping[array_tokens[1]], 1);
+
+//        ++load_counter;
+
+    }
+
+
+//    for (size_t idx = 1; num_ver_mapping.find(idx) != num_ver_mapping.end(); ++idx)
+//    {
+//        graph.push_back(num_ver_mapping[idx]);
+//    }
+    for(map<int, Vertex *>::const_iterator iter = num_ver_mapping.begin();
+            iter != num_ver_mapping.end();
+            ++iter)
+    {
+        graph.push_back(iter->second);
+    }
+
+    ifstream1.close();
+
+    return graph;
+}
+
+bool release_graph(vector<const Vertex *> &graph)
+{
+    for (vector<const Vertex *>::iterator iterator1 = graph.begin();
+         iterator1 != graph.end();
+         ++iterator1)
     {
         delete (*iterator1);
 
@@ -106,10 +167,15 @@ bool release_graph(vector<const Vertex *> graph)
     return true;
 }
 
-double modularity(set<const Vertex *> community, double half_total_weight)
+double modularity(set<const Vertex *> &community, double total_weight, bool directed = false)
 {
 
-    map<const Vertex*, double> k_values;
+    map<const Vertex *, double> k_values;
+
+    if (!directed)
+    {
+        total_weight *= 2;
+    }
 
     double q_value = 0;
 
@@ -138,32 +204,34 @@ double modularity(set<const Vertex *> community, double half_total_weight)
              neighbor != ((*vertex)->neighbors).end();
              ++neighbor)
         {
-            if(community.find(neighbor->first) == community.end())
+            if (community.find(neighbor->first) == community.end())
             {
                 continue;
             }
 
             //std::cout << k_values[*vertex] * k_values[neighbor->first] << std::endl;
 
-            q_value += (neighbor->second - k_values[*vertex] * k_values[neighbor->first] / (2 * half_total_weight));
+            q_value += (neighbor->second - k_values[*vertex] * k_values[neighbor->first] / total_weight);
         }
     }
 
-    return q_value / (2 * half_total_weight);
+    return q_value / total_weight;
 }
 
-map<const Vertex*, set<const Vertex*>> louvain(vector<const Vertex*> graph)
+map<const Vertex *, set<const Vertex *>> louvain(vector<const Vertex *> &graph, bool directed = false)
 {
-    map<const Vertex*, set<const Vertex*>> partitions;
+    map<const Vertex *, set<const Vertex *>> partitions;
 
     double total_weight = 0;
 
-    for(auto vertex : graph)
+    std::cout << "Creating single comms." << std::endl;
+
+    for (auto vertex : graph)
     {
         //cout << vertex->node_num << ":";
-        partitions[vertex] = set<const Vertex*>({vertex});
+        partitions[vertex] = set<const Vertex *>({vertex});
 
-        for(auto neighbor : vertex->neighbors)
+        for (auto neighbor : vertex->neighbors)
         {
             // cout << neighbor.second << " ";
 
@@ -173,36 +241,44 @@ map<const Vertex*, set<const Vertex*>> louvain(vector<const Vertex*> graph)
         // cout << endl;
     }
 
+    std::cout << "Finished Creating single comms." << std::endl;
+
+    if (!directed)
+    {
+        total_weight /= 2;
+    }
+
     double max_delta_q = 1, delta_q;
 
-    const Vertex* merging1, *merging2 ;
+    const Vertex *merging1, *merging2;
 
     // std::cout << "Initial partition size: " << partitions.size() << std::endl;
+    std::cout << "Applying Louvain." << std::endl;
 
-    while(max_delta_q > 0)
+    while (max_delta_q > 0)
     {
         max_delta_q = -1.1;
 
         merging1 = merging2 = nullptr;
 
-        for(auto partition : partitions)
+        for (auto partition : partitions)
         {
-            for(auto neighbor : partition.first->neighbors)
+            for (auto neighbor : partition.first->neighbors)
             {
-                if(partitions.find(neighbor.first) == partitions.end())
+                if (partitions.find(neighbor.first) == partitions.end())
                 {
                     continue;
                 }
 
-                set<const Vertex*> new_set(partitions[neighbor.first].begin(), partitions[neighbor.first].end());
+                set<const Vertex *> new_set(partitions[neighbor.first].begin(), partitions[neighbor.first].end());
 
-                delta_q = modularity(new_set, total_weight / 2);
+                delta_q = modularity(new_set, total_weight);
 
                 new_set.insert(partition.second.begin(), partition.second.end());
 
-                delta_q = modularity(new_set, total_weight / 2) - delta_q;
+                delta_q = modularity(new_set, total_weight) - delta_q;
 
-                if(delta_q > max_delta_q)
+                if (delta_q > max_delta_q)
                 {
                     max_delta_q = delta_q;
 
@@ -214,14 +290,14 @@ map<const Vertex*, set<const Vertex*>> louvain(vector<const Vertex*> graph)
             }
         }
 
-        if(max_delta_q > 0)
+        if (max_delta_q > 0)
         {
-            if(merging1 == nullptr or merging2 == nullptr)
+            if (merging1 == nullptr or merging2 == nullptr)
             {
                 throw "Bad Logic!";
             }
 
-            // std::cout << "Merging: " << merging1->node_num << " and " << merging2->node_num << std::endl;
+            std::cout << "Merging: " << merging1->node_num << " and " << merging2->node_num << std::endl;
 
             partitions[merging1].insert(partitions[merging2].begin(), partitions[merging2].end());
 
