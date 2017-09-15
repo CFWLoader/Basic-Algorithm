@@ -36,7 +36,30 @@ private:
 
     TreeNode *sortedListToBST(ListNode *head, ListNode *tail)
     {
-        if(head == nullptr)
+//        std::cout << "Head:";
+//
+//        if(head == nullptr)
+//        {
+//            std::cout <<  "NULL";
+//        }
+//        else
+//        {
+//            std::cout << head->val;
+//        }
+//
+//        std::cout << " Tail:";
+//
+//        if (tail == nullptr) {
+//            std::cout << "NULL";
+//        } else
+//        {
+//            std::cout << tail->val;
+//        }
+//
+//
+//        std::cout << std::endl;
+
+        if(head == tail)
         {
             return nullptr;
         }
@@ -49,9 +72,9 @@ private:
         // Use fast-slow pointer to find the middle point.
         ListNode* mid = head, *twiceSpeed = head;
 
-        while(twiceSpeed->next != nullptr)
+        while(twiceSpeed->next != tail)
         {
-            if(twiceSpeed->next->next != nullptr)
+            if(twiceSpeed->next->next != tail)
             {
                 mid = mid->next;
 
@@ -62,6 +85,8 @@ private:
                 twiceSpeed = twiceSpeed->next;
             }
         }
+
+//        std::cout << "Find mid:" << mid->val << std::endl;
 
         TreeNode* root = new TreeNode(mid->val);
 
