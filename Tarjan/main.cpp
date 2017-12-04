@@ -15,7 +15,7 @@ int main()
 {
     int size;
 
-    int** graph = loadGraph("sample2.txt", size);
+    int** graph = loadGraph("sample1.txt", size);
 
     for(int i = 0; i < size; ++i)
     {
