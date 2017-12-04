@@ -15,7 +15,7 @@ int main()
 {
     int size;
 
-    int** graph = loadGraph("sample0.txt", size);
+    int** graph = loadGraph("sample2.txt", size);
 
     for(int i = 0; i < size; ++i)
     {
@@ -30,7 +30,7 @@ int main()
         }
     }
 
-    dfsEntry(0, graph, size);
+    dfsEntry(5, graph, size);
 
     destructGraph(graph, size);
 
