@@ -1,8 +1,0 @@
-//
-// Created by CFWLoader on 10/26/17.
-//
-
-#ifndef PROBLEM524_SOLUTION_HPP
-#define PROBLEM524_SOLUTION_HPP
-
-#endif //PROBLEM524_SOLUTION_HPP
