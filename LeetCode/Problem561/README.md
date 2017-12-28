@@ -1,1 +1,0 @@
-# Problem 561 - Array Partition I

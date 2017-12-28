@@ -1,1 +1,0 @@
-# Problem 223 - Rectangle Area

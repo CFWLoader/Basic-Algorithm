@@ -1,1 +1,0 @@
-# Problem 242 - Valid Anagram

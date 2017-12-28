@@ -1,1 +1,0 @@
-# Problem 52 - N-Queens II
