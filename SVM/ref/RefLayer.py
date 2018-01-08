@@ -3,7 +3,7 @@
 import numpy
 import matplotlib.pyplot
 
-class Layer:
+class RefLayer:
     # 初始化 dim_out 个神经元构成的单层神经网络，输出为 dim_in 维
     def __init__(self, dim_in, dim_out):
         # 随机初始化权值矩阵 weight
@@ -35,11 +35,11 @@ class Layer:
 
 if __name__ == "__main__":
 
-    a = Layer(2, 1)
+    a = RefLayer(2, 1)
     x = numpy.array([[1, 2], [2, 1], [3, 1], [1, 3], [2, 3], [3, 2]])
     y = numpy.array([[0], [0], [0], [1], [1], [1]])
 
-    for i in range(5000):
+    for i in range(1000):
         # print(a.compute(x))
         a.learn(x, y, 0.01)
         # print(a.weight, a.bias)
