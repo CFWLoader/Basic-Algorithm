@@ -1,5 +1,5 @@
-import math
-
+from ref.RefLayer import RefLayer
+import numpy
 
 class Perceptron:
     def __init__(self, dim_in):
@@ -57,7 +57,7 @@ def match_rate(y1, y2):
 
     for i in range(0, len(y1)):
 
-        if y1[i] == y2[i]:
+        if y1[i][0] == y2[i][0]:
 
             match_count += 1
 
@@ -66,18 +66,44 @@ def match_rate(y1, y2):
 
 if __name__ == '__main__':
 
-    perc = Perceptron(2)
+    # perc = Perceptron(2)
+    #
+    # x = [[1, 2], [2, 1], [3, 1], [1, 3], [2, 3], [3, 2]]
+    #
+    # y = [0, 0, 0, 1, 1, 1]
+    #
+    # for epoch in range(0, 6000):
+    #
+    #     perc.train(x, y)
+    #
+    #     result = perc.predict(x)
+    #
+    #     # print("Epoch: ", epoch, "  Match rate: ", match_rate(result, y), "%")
+    #
+    # print("Match Rate: ", match_rate(result, y))
 
-    x = [[1, 2], [2, 1], [3, 1], [1, 3], [2, 3], [3, 2]]
+    alayer = RefLayer(2,1)
 
-    y = [0, 0, 0, 1, 1, 1]
+    xn = numpy.array([[1, 2], [2, 1], [3, 1], [1, 3], [2, 3], [3, 2]])
+    yn = numpy.array([[0], [0], [0], [1], [1], [1]])
 
-    for epoch in range(0, 6000):
+    for i in range(60):
+        # print(a.compute(x))
+        alayer.learn(xn, yn, 0.01)
+        # print(a.weight, a.bias)
 
-        perc.train(x, y)
+    ref_result = alayer.compute(xn)
 
-        result = perc.predict(x)
+    fig_result = []
 
-        # print("Epoch: ", epoch, "  Match rate: ", match_rate(result, y), "%")
+    for i in range(0, len(ref_result)):
 
-    print("Match Rate: ", match_rate(result, y))
+        if ref_result[i][0] > 0:
+
+            fig_result.append([1])
+
+        else:
+
+            fig_result.append([0])
+
+    print("Match Rate: ", match_rate(fig_result, yn))
