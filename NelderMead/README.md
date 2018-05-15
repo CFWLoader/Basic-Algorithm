@@ -22,6 +22,7 @@ Procedure neldermead(objfunc, x_init, simplex_init)
                 x_copy[idx - 1] = x_init[idx - 1] * nonzdelt
             else:
                 x_copy[idx - 1] = zdelt
+            simplex[idx] = x_copy
     fsimplex = Array(size = dim_of_param + 1)
     // Calculate all object function values for simplex.
     for idx in 0..(dim_of_param):
