@@ -26,6 +26,8 @@ Procedure neldermead(objfunc, x_init, simplex_init)
     // Calculate all object function values for simplex.
     for idx in 0..(dim_of_param):
         fsimplex = objfunc(simplex[idx])
+    sort fsimplex
+    sort simplex as fsimplex's order
     // Start searching.
     while conditions are not demanded:          // Conditions can be max iteration or some contraints.
         x0 = centroid(simplex[1..dim_of_param])
@@ -58,10 +60,11 @@ Procedure neldermead(objfunc, x_init, simplex_init)
                         fsimplex[dim_of_param] = objfunc(xc)
                     else:                           
                         shrink = true
-        if shrink:
+        if shrink:                              // Other cases are failed, do shrink.
             for i in 1..dim_of_param:
                 simplex[i] = simplex[0] + sigma(simplex[i] - simplex[0])
                 fsimplex[i] = objfunc(simplex[i])
-
-        sort(fsimplex)
+        sort fsimplex
+        sort simplex as fsimplex's order
+    return simplex[0]
 ```
