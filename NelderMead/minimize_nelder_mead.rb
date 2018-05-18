@@ -31,11 +31,4 @@ if __FILE__ == $0
     minize_nelder_mead(objfun_beta, [3, 2])
 end
 
-#  let objFuncBeta = (params) => {
-#      let a = params[0], b = params[1];
-#  	return -(len * mathjs.log(mathjs.gamma(a + b)) - len * mathjs.log(mathjs.gamma(a)) - len * mathjs.log(mathjs.gamma(b)) +
-# 		(a - 1) * lnSum + (b - 1) * lnOneMinusSum);
-# };
-
-# let result = minizeNelderMead(objFuncBeta, [2.8148403344142907,1.87300183956733]);
 # par1 = 2.84255334896478, par2 = 1.897010225091196
