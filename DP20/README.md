@@ -20,3 +20,37 @@ A[i] == B[j], i == 0 ~ or ~ j == 0
 $$
 
 ### 2 - Longest Increasing Subsequence
+
+$$
+f(i) =
+\begin{cases}
+f(i - 1) + 1, & ~ A[i] > A[i - 1], i >1 \\
+1, & ~ A[i]<A[i-1] ~or~i=1
+\end{cases}
+$$
+
+### 3 - Edit Distance
+
+Let A denotes the original string, B denotes the expected string.
+
+Three ways to transform string A to B, every operation take 1 cost:
+- Insert a character, use insert(string, index, char) to represent this operation.
+- Delete a character, use delete(string, index) to represent this operation.
+- Replace a character, use replace(string, index, char) to represent this operation.
+
+For example(index starts from 1):
+
+```
+insert("ABC", 2, 'D') = "ABDC"
+delete("ABC", 2) = "AC"
+replace("ABC", 2, 'E') = "AEC"
+```
+
+Then the state transfer function:
+
+$$
+f(i, j) = 
+\begin{cases}
+f(i - 1, j - 1), & A[i] == B[j], i > 1, j > 1 \\
+\end{cases}
+$$
