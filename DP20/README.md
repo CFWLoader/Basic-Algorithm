@@ -51,6 +51,19 @@ Then the state transfer function:
 $$
 f(i, j) = 
 \begin{cases}
-f(i - 1, j - 1), & A[i] == B[j], i > 1, j > 1 \\
+j, & i == 0 \\
+i, & j == 0 \\
+f(i - 1, j - 1), & A[i] == B[j], i > 0, j > 0 \\
+1 + min(f(i, j - 1), f(i - 1, j), f(i - 1, j - 1)) & else
 \end{cases}
+$$
+
+In this case:
+
+$$
+\begin{matrix}
+f(i, j - 1) & Insert ~~ Operation \\
+f(i - 1, j) & Remove ~~ Operation \\
+f(i - 1, j - 1) & Replace ~~ Operation
+\end{matrix}
 $$
